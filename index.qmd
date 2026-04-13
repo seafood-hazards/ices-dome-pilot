@@ -1,0 +1,79 @@
+---
+title: "ICES-DOME Pilot Database"
+subtitle: "A pilot study to evaluate the database structure using the ICES-DOME data"
+---
+
+This site presents the initial version of the database design and its potential applications using the publicly available [ICES-DOME](https://www.ices.dk/data/data-portals/Pages/default.aspx) dataset.
+
+## Source Data
+
+- Thematic views page at ICES-DOME: [
+Contaminants and biological effects of contaminants in biota](https://dome.ices.dk/views/ContaminantsBiota.aspx)
+
+### Search criteria
+
+#### Parameter Group
+
+ * Metals and matalloids
+
+### Count of Sampling Sites
+The table below summarizes the number of sampling sites documented across 27 activities and projects between 1975 and 2025.
+
+```{r}
+library(tidyverse)
+library(DT)
+
+# 1. Define the URL for the data file
+data_file_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.0/pilot_ices_dome.tsv.gz"
+local_data_file_name <- "pilot_ices_dome.tsv.gz"
+
+# 2. Download Logic
+if (!file.exists(local_data_file_name)) {
+  options(timeout = 600)
+  download.file(data_file_url, destfile = local_data_file_name, mode = "wb")
+  message("Database downloaded.")
+} else {
+  message("Using existing local database.")
+}
+
+df_ices-dome_sediment <- read_tsv(local_data_file_name)
+df_counts <- df_ices-dome_sediment %>%
+  distinct(activity_id, activity_name, site_code, site_name, sample_time, param_name) %>%
+  mutate(year = year(sample_time)) %>%
+  count(activity_id, activity_name, year, param_name) %>%
+  pivot_wider(names_from = param_name, values_from = n) %>%
+  replace(is.na(.), 0) %>%
+  mutate(activity_id = factor(activity_id),
+         activity_name = factor(activity_name)) %>%
+  rename(`Activity ID` = activity_id,
+         `Activity Name` = activity_name,
+         Year = year)
+
+datatable(df_counts, filter = "top", rownames = FALSE, class = "nowrap", options = list(scrollX = TRUE))
+
+```
+
+## Database Design and Creation
+
+After creating the ER (Entity–Relationship) diagram, the tables were implemented in a single SQLite file containing 10 tables. All required data were extracted from the ICES-DOME export file and imported into the corresponding tables.
+
+- See the [DB Schema](./db-schema.qmd) page for details on the database architecture.
+- See the [Data Preparation](./data-preparation.qmd) page for the data preparation process used prior to importing the ICES-DOME dataset.
+
+## Geospatial Analysis
+
+To facilitate efficient core and sample selection, distances to the nearest coastline were calculated for the ICES-DOME data. In addition, the nearest country and municipality, as well as the sea and ocean names, were identified based on the core locations.
+
+- See the [Distance Calculation](./distance-to-coast.qmd) page for the methods and results of calculating the distance to the nearest coastline.
+- See the [Location Names](./location-names.qmd) page for the estimation of location names from geographic coordinates.
+- See the [Interactive Map](./distance-interactive-map.qmd) page for an interactive visualization of core locations with meta-information.
+
+## Data Export
+
+Data can be exported for both exploration and submission purposes.
+
+- See the [Export to Tabular File](./data-export.qmd) page for a description of a single tabular file format (`.tsv.gz`) that is extracted and merged from all database tables for data exploration.
+
+## Tools
+
+- See the [Pilot DB Viewer](./pilot-db-viewer.qmd) page for a read-only view of the pilot database.
