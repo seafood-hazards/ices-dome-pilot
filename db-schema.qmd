@@ -6,132 +6,83 @@ subtitle: A proposed database design based on ICES-DOME Data
 The page shows the database schema diagram along with table definitions based on the ICES-DOME dataset.
 
 ## DB Schema Diagram
-The proposed database design shown in the ER (Entity Relationship) diagram below contains 10 tables including three meta (entity) tables, four variable (look-up or reference) tables, one fact (measurement) table, and two mixed tables.
+The proposed database design shown in the ER (Entity Relationship) diagram below contains nine tables including three meta (entity) tables, five variable (look-up or reference) tables, and one fact (measurement) table.
 
 The columns with `PK` in the diagram indicate primary keys of the table, which guarantees unique identifications.
 
 ![](./image/ices_dome_db.webp){.zoomable}
 
-## Activity Table
+## Project Table
 
-The `activity` table contains the monitoring programs or projects associated with the samples.
+The `project` table captures the unique combinations of monitoring programme,
+purpose, country, and responsible institute that generated the data.
 
 ### Table Columns
+
 ```{r}
 library(tibble)
 
-activity_tbl <- tibble(
-  `Name` = c(
-    "activity_id", "activity_name"
+tibble(
+  Name = c(
+    "project_id", "project", "purpose", "country", "institute"
   ),
   `Data Type` = c(
-    "TEXT", "TEXT"
+    "INTEGER", "TEXT", "TEXT", "TEXT", "TEXT"
   ),
-  `PK` = c(
-    "✓", ""
+  PK = c(
+    "✓", "", "", "", ""
   ),
-  `NA Allowed` = c(
-    FALSE, FALSE
-  ),
-  `Description` = c(
-    "Primary Key. Unique identifier for the activity/monitoring program.",
-    "Name of the monitoring program or project."
-  )
-)
-
-activity_tbl
-```
-
-## Client Table
-
-The `client` table stores information about the entities (e.g., municipalities, environmental agencies) that commissioned the data collection.
-
-### Table Columns
-```{r}
-client_tbl <- tibble(
-  `Name` = c(
-    "client_id", "client", "archive"
-  ),
-  `Data Type` = c(
-    "INTEGER", "TEXT", "BOOLEAN"
-  ),
-  `PK` = c(
-    "✓", "", ""
+  FK = c(
+    "", "", "", "", ""
   ),
   `NA Allowed` = c(
-    FALSE, FALSE, FALSE
+    FALSE, FALSE, TRUE, TRUE, TRUE
   ),
-  `Description` = c(
-    "Primary Key. Unique identifier for the client.",
-    "Name of the client or commissioner.",
-    "Flag indicating if the record is archived."
+  Description = c(
+    "Primary Key. Auto-generated surrogate key.",
+    "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.",
+    "Purpose code(s), e.g. T~S (trend and surveillance).",
+    "Country name of the responsible institute.",
+    "Code for the reporting laboratory / institute (maps to RLABO in code_lookup)."
   )
 )
-
-client_tbl
 ```
 
-## Contractor Table
-
-The `contractor` table identifies the laboratories or institutes that performed the sampling or analysis.
-
-### Table Columns
-```{r}
-contractor_tbl <- tibble(
-  `Name` = c(
-    "contractor_id", "contractor"
-  ),
-  `Data Type` = c(
-    "INTEGER", "TEXT"
-  ),
-  `PK` = c(
-    "✓", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE
-  ),
-  `Description` = c(
-    "Primary Key. Unique identifier for the contractor.",
-    "Name of the contractor (e.g., NIVA, Analycen)."
-  )
-)
-
-contractor_tbl
-```
+---
 
 ## Site Table
 
-The `site` table holds geographical and administrative details about the sampling locations.
+The `site` table holds the geographical location of each sampling station.
 
 ### Table Columns
+
 ```{r}
-site_tbl <- tibble(
+tibble(
   `Name` = c(
-    "site_code", "site_name", "label", "lon",
-    "lat", "dist_to_coast", "country", "country_code",
+    "site_id", "station", "longitude", "latitude",
+    "dist_to_coast", "country", "country_code",
     "municipality", "sea_name"
   ),
   `Data Type` = c(
-    "TEXT", "TEXT", "TEXT", "REAL",
-    "REAL", "REAL", "TEXT", "TEXT",
+    "TEXT", "TEXT", "REAL", "REAL",
+    "REAL", "TEXT", "TEXT",
     "TEXT", "TEXT"
   ),
   `PK` = c(
     "✓", "", "", "",
-    "", "", "", "",
+    "", "", "",
     "", ""
   ),
   `NA Allowed` = c(
-    FALSE, TRUE, TRUE, FALSE,
-    FALSE, TRUE, TRUE, TRUE,
+    FALSE, FALSE, FALSE, FALSE,
+    TRUE, TRUE, TRUE,
     TRUE, TRUE
   ),
   `Description` = c(
-    "Primary Key. Unique code for the sampling site.",
-    "Name of the sampling location.",
-    "Additional designation or label for the site.",
-    "Longitude coordinate.",
-    "Latitude coordinate.",
+    "Primary Key. Auto-generated surrogate key.",
+    "Station identifier code.",
+    "Longitude coordinate (decimal degrees).",
+    "Latitude coordinate (decimal degrees).",
     "Distance to the coast.",
     "Country name.",
     "Country code (e.g., NO).",
@@ -140,208 +91,316 @@ site_tbl <- tibble(
   )
 )
 
-site_tbl
 ```
 
-## Sample Method Table
+---
 
-The `sample_method` table catalogs the different techniques and equipment used to collect samples.
+## Sample Table
+
+The `sample` table records one physical sampling event, linking a project,
+site, and date together.
 
 ### Table Columns
+
 ```{r}
-sample_method_tbl <- tibble(
-  `Name` = c(
-    "method_id", "method"
+tibble(
+  Name = c(
+    "sample_id", "project_id", "site_id",
+    "year", "date", "sample_type", "sample_type_description"
   ),
   `Data Type` = c(
-    "INTEGER", "TEXT"
+    "INTEGER", "INTEGER", "INTEGER",
+    "INTEGER", "TEXT", "TEXT", "TEXT"
   ),
-  `PK` = c(
-    "✓", ""
+  PK = c(
+    "✓", "", "",
+    "", "", "", ""
+  ),
+  FK = c(
+    "", "project (project_id)", "site (site_id)",
+    "", "", "", ""
   ),
   `NA Allowed` = c(
-    FALSE, FALSE
+    FALSE, FALSE, FALSE,
+    TRUE, TRUE, TRUE, TRUE
   ),
-  `Description` = c(
-    "Primary Key. Unique identifier for the sampling method.",
-    "Description or standard code for the sampling method."
+  Description = c(
+    "Primary Key. Auto-generated surrogate key.",
+    "Foreign Key to the project table.",
+    "Foreign Key to the site table.",
+    "Year of sampling.",
+    "Full date of sampling (text, format DD/MM/YYYY).",
+    "Sample type code, e.g. GC (grab/core) or DA (dab).",
+    "Sample type description."
   )
 )
-
-sample_method_tbl
 ```
+
+---
+
+## Code Lookup Table
+
+The `code_lookup` table is a common lookup resource that maps every coded field
+in the database to its human-readable description. It also handles multi-code
+values (e.g. `T~S`) by storing one row per individual component code.
+
+### Table Columns
+
+```{r}
+tibble(
+  Name = c(
+    "data_col", "code_type", "raw_code", "code", "description"
+  ),
+  `Data Type` = c(
+    "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"
+  ),
+  PK = c(
+    "✓", "✓", "✓", "✓", ""
+  ),
+  FK = c(
+    "", "", "", "", ""
+  ),
+  `NA Allowed` = c(
+    FALSE, FALSE, FALSE, FALSE, TRUE
+  ),
+  Description = c(
+    "Primary Key. Column name in the database that contains this code (e.g. purpose, qflag).",
+    "Primary Key. Code type / domain from the ICES vocabulary (e.g. PURPM, QFLAG).",
+    "Primary Key. The original raw value as it appears in the data (e.g. T~S).",
+    "Primary Key. Individual split code derived from raw_code (e.g. T or S).",
+    "Human-readable description of the individual code."
+  )
+)
+```
+
+---
+
+## Parameter Table
+
+The `parameter` table defines each chemical or physical property that is
+measured, together with its parent parameter group.
+
+### Table Columns
+
+```{r}
+tibble(
+  Name = c(
+    "param", "param_description",
+    "group_code", "group_description"
+  ),
+  `Data Type` = c(
+    "TEXT", "TEXT",
+    "TEXT", "TEXT"
+  ),
+  PK = c(
+    "✓", "",
+    "", ""
+  ),
+  FK = c(
+    "", "",
+    "", ""
+  ),
+  `NA Allowed` = c(
+    FALSE, TRUE,
+    TRUE, TRUE
+  ),
+  Description = c(
+    "Primary Key. ICES parameter code, e.g. HG, CD, GSMF2000.",
+    "Full name or description of the parameter.",
+    "Parameter group code, e.g. I-MET, P-PHY.",
+    "Full name of the parameter group."
+  )
+)
+```
+
+---
+
+## LLD Table
+
+The `lld` table stores the Limit of Detection (LOD) and Limit of Quantification
+(LOQ) values associated with specific parameter measurements.
+
+### Table Columns
+
+```{r}
+tibble(
+  Name = c(
+    "lld_id", "param", "lod", "loq"
+  ),
+  `Data Type` = c(
+    "INTEGER", "TEXT", "REAL", "REAL"
+  ),
+  PK = c(
+    "✓", "", "", ""
+  ),
+  FK = c(
+    "", "parameter (param)", "", ""
+  ),
+  `NA Allowed` = c(
+    FALSE, FALSE, TRUE, TRUE
+  ),
+  Description = c(
+    "Primary Key. Auto-generated surrogate key.",
+    "Foreign Key to the parameter table.",
+    "Limit of Detection value.",
+    "Limit of Quantification value."
+  )
+)
+```
+
+---
 
 ## Analysis Method Table
 
-The `analysis_method` table contains the laboratory procedures and units used to analyze the parameters.
+The `analysis_method` table catalogues the combination of laboratory, storage,
+pre-treatment, extraction, clean-up, and analytical technique used for each
+parameter measurement.
 
 ### Table Columns
+
 ```{r}
-analysis_method_tbl <- tibble(
-  `Name` = c(
-    "analysis_id", "analysis", "unit"
+tibble(
+  Name = c(
+    "analysis_id", "param", "labo",
+    "metst", "metpt",
+    "metps", "metcx", "metoa"
+  ),
+  `Data Type` = c(
+    "INTEGER", "TEXT", "TEXT",
+    "TEXT", "TEXT",
+    "TEXT", "TEXT", "TEXT"
+  ),
+  PK = c(
+    "✓", "", "",
+    "", "",
+    "", "", ""
+  ),
+  FK = c(
+    "", "parameter (param)", "",
+    "", "",
+    "", "", ""
+  ),
+  `NA Allowed` = c(
+    FALSE, TRUE, TRUE,
+    TRUE, TRUE,
+    TRUE, TRUE, TRUE
+  ),
+  Description = c(
+    "Primary Key. Auto-generated surrogate key.",
+    "Foreign Key to the parameter table.",
+    "Analysing laboratory code.",
+    "Sample storage method code.",
+    "Pre-treatment method code.",
+    "Sub-sampling method code.",
+    "Extraction / clean-up method code.",
+    "Analytical method code, e.g. ICP-MS, AAS-GF."
+  )
+)
+```
+
+---
+
+## Reference Table
+
+The `reference` table holds bibliographic or standard-method references cited
+for specific analyses.
+
+#### Table Columns
+
+```{r}
+tibble(
+  Name = c(
+    "ref_id", "ref", "ref_description"
   ),
   `Data Type` = c(
     "INTEGER", "TEXT", "TEXT"
   ),
-  `PK` = c(
+  PK = c(
     "✓", "", ""
   ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE
-  ),
-  `Description` = c(
-    "Primary Key. Unique identifier for the analysis method.",
-    "Description or standard code of the analysis method.",
-    "Unit of measurement for the analysis results."
-  )
-)
-
-analysis_method_tbl
-```
-
-## Parameter Table
-
-The `parameter` table defines the chemicals or properties being measured.
-
-### Table Columns
-```{r}
-parameter_tbl <- tibble(
-  `Name` = c(
-    "param_id", "param_name", "cas_no"
-  ),
-  `Data Type` = c(
-    "TEXT", "TEXT", "TEXT"
-  ),
-  `PK` = c(
-    "✓", "", ""
+  FK = c(
+    "", "", ""
   ),
   `NA Allowed` = c(
     FALSE, FALSE, TRUE
   ),
-  `Description` = c(
-    "Primary Key. Unique code for the parameter.",
-    "Name of the chemical or measured property.",
-    "Chemical Abstracts Service (CAS) registry number."
+  Description = c(
+    "Primary Key. Auto-generated surrogate key.",
+    "Short reference code, e.g. EPA 6020 or ISO11885:2007.",
+    "Full title or description of the reference document."
   )
 )
-
-parameter_tbl
 ```
 
-## Sample Table
-
-The `sample` table records the core metadata for each physical sample collected, tying together locations, methods, and actors.
-
-### Table Columns
-```{r}
-sample_tbl <- tibble(
-  `Name` = c(
-    "sample_id", "activity_id", "site_code", "client_id", 
-    "contractor_id", "method_id", "upper_depth", "lower_depth", 
-    "sample_time", "filtered"
-  ),
-  `Data Type` = c(
-    "TEXT", "TEXT", "TEXT", "INTEGER",
-    "INTEGER", "INTEGER", "REAL", "REAL",
-    "TEXT", "BOOLEAN"
-  ),
-  `PK` = c(
-    "✓", "", "", "",
-    "", "", "", "",
-    "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE, FALSE,
-    FALSE, FALSE, FALSE, FALSE,
-    TRUE, TRUE
-  ),
-  `Description` = c(
-    "Primary Key. Unique identifier for the sample.",
-    "Foreign Key to activity table.",
-    "Foreign Key to site table.",
-    "Foreign Key to client table.",
-    "Foreign Key to contractor table.",
-    "Foreign Key to sample_method table.",
-    "Upper depth of the sample.",
-    "Lower depth of the sample.",
-    "Timestamp of when the sample was collected.",
-    "Indicates whether the sample was filtered."
-  )
-)
-
-sample_tbl
-```
+---
 
 ## Sediment Table
 
-The `sediment` table stores the actual measurement values for the parameters analyzed in each sample. 
+The `sediment` table stores the actual measurement values. Each row represents
+one parameter measurement from one physical sub-sample (sediment layer) within
+a sampling event.
 
-### Table Columns
+#### Table Columns
+
 ```{r}
-sediment_tbl <- tibble(
-  `Name` = c(
-    "sample_id", "param_id", "sediment_no", "analysis_id",
-    "value", "operator", "sample_no", "n_values"
+tibble(
+  Name = c(
+    "project_id", "site_id", "sample_id", "param", "sediment_no",
+    "depth_from", "depth_to", "value", "unit", "basis",
+    "qflag", "vflag", "uncrt", "metcu",
+    "sub_no", "dcflag",
+    "lld_id", "analysis_id", "ref_id"
   ),
   `Data Type` = c(
-    "TEXT", "TEXT", "INTEGER", "INTEGER",
-    "REAL", "TEXT", "TEXT", "INTEGER"
+    "INTEGER", "INTEGER", "INTEGER", "TEXT", "INTEGER",
+    "REAL", "REAL", "REAL", "TEXT", "TEXT",
+    "TEXT", "TEXT", "REAL", "TEXT",
+    "TEXT", "TEXT",
+    "INTEGER", "INTEGER", "INTEGER"
   ),
-  `PK` = c(
-    "✓", "✓", "✓", "",
-    "", "", "", ""
+  PK = c(
+    "✓", "✓", "✓", "✓", "✓",
+    "", "", "", "", "",
+    "", "", "", "",
+    "", "",
+    "", "", ""
+  ),
+  FK = c(
+    "project (project_id)", "site (site_id)", "sample (sample_id)",
+    "parameter (param)", "",
+    "", "", "", "", "",
+    "", "", "", "",
+    "", "",
+    "lld (lld_id)", "analysis_method (analysis_id)", "reference (ref_id)"
   ),
   `NA Allowed` = c(
-    FALSE, FALSE, FALSE, FALSE,
-    FALSE, TRUE, TRUE, TRUE
+    FALSE, FALSE, FALSE, FALSE, FALSE,
+    TRUE, TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE,
+    TRUE, TRUE, TRUE
   ),
-  `Description` = c(
-    "Primary Key. Foreign Key to sample table.",
-    "Primary Key. Foreign Key to parameter table.",
-    "Primary Key. Sequential index for multiple records per sample-parameter combination.",
-    "Foreign Key to analysis_method table.",
-    "The measured concentration or numerical result.",
-    "Mathematical operator (e.g., <, =, >), indicating LLD.",
-    "Physical sample identification number.",
-    "Number of values/replicates used to derive the measurement."
+  Description = c(
+    "Primary Key. Foreign Key to the project table.",
+    "Primary Key. Foreign Key to the site table.",
+    "Primary Key. Foreign Key to the sample table.",
+    "Primary Key. Foreign Key to the parameter table.",
+    "Primary Key. Sequential sub-sample index within a sample–parameter combination.",
+    "Upper depth of the sediment layer (m).",
+    "Lower depth of the sediment layer (m).",
+    "Measured concentration or numerical result.",
+    "Unit of measurement, e.g. ug/kg or %.",
+    "Basis of measurement code, e.g. D (dry weight).",
+    "Data quality flag code (may be multi-value, e.g. <).",
+    "Validity flag code.",
+    "Measurement uncertainty.",
+    "Concentration unit code for the reported value.",
+    "Sub-sample number within the physical core.",
+    "Data completeness flag code(s).",
+    "Foreign Key to the lld table.",
+    "Foreign Key to the analysis_method table.",
+    "Foreign Key to the reference table."
   )
 )
 
-sediment_tbl
-```
-
-## LLD (Limits of Detection) Table
-
-The `lld` table contains Limit of Detection (LOD) and Limit of Quantification (LOQ) data corresponding to specific measurements.
-
-### Table Columns
-```{r}
-lld_tbl <- tibble(
-  `Name` = c(
-    "sample_id", "param_id", "sediment_no",
-    "type", "value"
-  ),
-  `Data Type` = c(
-    "TEXT", "TEXT", "INTEGER",
-    "TEXT", "REAL"
-  ),
-  `PK` = c(
-    "✓", "✓", "✓",
-    "✓", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE,
-    FALSE, FALSE
-  ),
-  `Description` = c(
-    "Primary Key. Foreign Key to sediment table.",
-    "Primary Key. Foreign Key to sediment table.",
-    "Primary Key. Foreign Key to sediment table.",
-    "Primary Key. Type of limit (e.g., LOD or LOQ).",
-    "Numerical value of the detection/quantification limit."
-  )
-)
-
-lld_tbl
 ```

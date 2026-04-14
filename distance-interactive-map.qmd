@@ -1,5 +1,5 @@
 ---
-title: "Interactive Map of Core Locations"
+title: "Interactive Map of Site Locations"
 subtitle: Interactive map to view sediment core locations with meta information
 ---
 
@@ -42,8 +42,8 @@ library(sf)
 points_web <- readRDS(".data/points_web_ices_dome.Rds")
 
 # 2. Define Default View 
-home_lat <- 68
-home_lng <- 15
+home_lat <- 55
+home_lng <- 5
 home_zoom <- 4
 
 # 3. Create Palette
@@ -68,16 +68,16 @@ for(group in dist_groups) {
       fillColor = ~pal(group),
       fillOpacity = 0.7,
       weight = 1,
-      label = ~paste0("Activity: ", activity_id, ", Site: ", site_code),
+      label = ~paste0("Project ID: ", project_id, ", Site ID: ", site_id),
       popup = ~paste0(
-        "<strong>Activity ID:</strong> ", activity_id, "<br>",
-        "<strong>Activity:</strong> ", activity_name, "<br>",
-        "<strong>Site Code:</strong> ", site_code, "<br>",
-        "<strong>Site:</strong> ", site_name, "<br>",
-        "<strong>Latitude:</strong> ", round(lon, 2), "<br>",
-        "<strong>Longitude:</strong> ", round(lat, 2), "<br>",
+        "<strong>Project ID:</strong> ", project_id, "<br>",
+        "<strong>Project:</strong> ", project, "<br>",
+        "<strong>Site ID:</strong> ", site_id, "<br>",
+        "<strong>Longitude:</strong> ", round(longitude, 2), "<br>",
+        "<strong>Latitude:</strong> ", round(latitude, 2), "<br>",
         "<strong>Distance:</strong> ", round(dist_to_coast, 1), " km", "<br>",
         "<strong>Country:</strong> ", country, "<br>",
+        "<strong>Country 2:</strong> ", est_country, "<br>",
         "<strong>Country Code:</strong> ", country_code, "<br>",
         "<strong>Municipality:</strong> ", municipality, "<br>",
         "<strong>Sea/Ocean Name:</strong> ", sea_name, "<br>"
