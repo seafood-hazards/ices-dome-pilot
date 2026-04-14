@@ -1,6 +1,6 @@
 ---
 title: "Distance Calculation"
-subtitle: Distance calculation to the nearest Norwegian coastline from core locations 
+subtitle: Distance calculation to the nearest coastline from core locations
 ---
 
 As the initial data analysis will be performed on the ICES-DOME sites located within Norwegian fjords and surrounding areas near the Norwegian coastline, the distances to the nearest coastline were calculated.

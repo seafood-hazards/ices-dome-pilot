@@ -16,8 +16,8 @@ Contaminants and biological effects of contaminants in biota](https://dome.ices.
 
  * Metals and matalloids
 
-### Count of Sampling Sites
-The table below summarizes the number of sampling sites documented across 27 activities and projects between 1975 and 2025.
+### Count of Projects
+The table below summarizes the number of projects .
 
 ```{r}
 library(tidyverse)
