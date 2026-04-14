@@ -36,20 +36,19 @@ if (!file.exists(local_data_file_name)) {
   message("Using existing local database.")
 }
 
-df_ices-dome_sediment <- read_tsv(local_data_file_name)
-df_counts <- df_ices-dome_sediment %>%
-  distinct(activity_id, activity_name, site_code, site_name, sample_time, param_name) %>%
-  mutate(year = year(sample_time)) %>%
-  count(activity_id, activity_name, year, param_name) %>%
-  pivot_wider(names_from = param_name, values_from = n) %>%
-  replace(is.na(.), 0) %>%
-  mutate(activity_id = factor(activity_id),
-         activity_name = factor(activity_name)) %>%
-  rename(`Activity ID` = activity_id,
-         `Activity Name` = activity_name,
-         Year = year)
+df_ices_dome_sediment <- read_tsv(local_data_file_name)
+project_table <- df_ices_dome_sediment%>%
+  filter(param %in% c("CO", "CU", "MN", "MO", "SE", "ZN")) %>%
+  mutate(param = factor(param, levels=c("CO", "CU", "MN", "MO", "SE", "ZN"),
+                        labels = c("Co", "Cu", "Mn", "Mo", "Se", "Zn"))) %>%
+  count(project, country, year, param) %>%
+  arrange(param) %>%
+  pivot_wider(names_from = param, values_from = n) %>%
+  arrange(project, country, year) %>%
+  dplyr::select(Project = project, Country = country, Year = year,
+                Cobalt = Co, Copper  =Cu, Manganese = Mn, Molybdenum = Mo, Zinc = Zn, Selenium = Se)
 
-datatable(df_counts, filter = "top", rownames = FALSE, class = "nowrap", options = list(scrollX = TRUE))
+datatable(project_table, filter = "top", rownames = FALSE, class = "nowrap", options = list(scrollX = TRUE))
 
 ```
 
@@ -58,7 +57,6 @@ datatable(df_counts, filter = "top", rownames = FALSE, class = "nowrap", options
 After creating the ER (Entity–Relationship) diagram, the tables were implemented in a single SQLite file containing 10 tables. All required data were extracted from the ICES-DOME export file and imported into the corresponding tables.
 
 - See the [DB Schema](./db-schema.qmd) page for details on the database architecture.
-- See the [Data Preparation](./data-preparation.qmd) page for the data preparation process used prior to importing the ICES-DOME dataset.
 
 ## Geospatial Analysis
 
@@ -66,7 +64,7 @@ To facilitate efficient core and sample selection, distances to the nearest coas
 
 - See the [Distance Calculation](./distance-to-coast.qmd) page for the methods and results of calculating the distance to the nearest coastline.
 - See the [Location Names](./location-names.qmd) page for the estimation of location names from geographic coordinates.
-- See the [Interactive Map](./distance-interactive-map.qmd) page for an interactive visualization of core locations with meta-information.
+- See the [Interactive Map](./distance-interactive-map.qmd) page for an interactive visualization of site locations with meta-information.
 
 ## Data Export
 

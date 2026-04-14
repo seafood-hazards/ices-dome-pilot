@@ -20,71 +20,98 @@ The file `pilot_ices_dome.tsv.gz` is a denormalized (flat) export of the relatio
 ```{r}
 library(tibble)
 
-# Definition of the exported TSV columns and their sources
 exported_columns_tbl <- tibble(
   `Column Name` = c(
-    # Activity Metadata
-    "activity_id", "activity_name",
+    # Project metadata
+    "project_id", "project", "country",
 
-    # Site Metadata
-    "site_code", "site_name", "lon", "lat", "dist_to_coast",
-    "country", "country_code", "municipality", "sea_name",
+    # Site metadata
+    "site_id", "longitude", "latitude", "dist_to_coast",
+    "est_country", "country_code", "municipality", "sea_name",
 
-    # Sample Metadata
-    "sample_time", "upper_depth", "lower_depth", "sample_no", "n_values",
+    # Parameter metadata
+    "param", "param_description",
 
-    # Parameter Metadata
-    "param_id", "param_name",
+    # Sample metadata
+    "year", "date", "sample_type", "sample_type_description",
 
-    # Methods
-    "method", "analysis",
+    # Sediment depth / sub-sample index
+    "depth_from", "depth_to", "sediment_no",
 
-    # Chemistry / Measurement Data
-    "value", "unit", "operator",
+    # Measurement
+    "value", "unit", "basis", "qflag", "vflag", "metcu",
 
-    # Limits of Detection/Quantification
-    "lod", "loq"
+    # Detection limits & uncertainty
+    "lod", "loq", "uncrt",
+
+    # Analysis method
+    "labo", "metst", "metpt", "metps", "metcx", "metoa"
   ),
 
   `Source Table` = c(
-    "Activity", "Activity",
-    "Site", "Site", "Site", "Site", "Site",
-    "Site", "Site", "Site", "Site",
-    "Sample", "Sample", "Sample", "Sediment", "Sediment",
-    "Parameter", "Parameter",
-    "Sample Method", "Analysis Method",
-    "Sediment", "Analysis Method", "Sediment",
-    "LLD (Filtered)", "LLD (Filtered)"
+    "project", "project", "project",
+    "site", "site", "site", "site",
+    "site", "site", "site", "site",
+    "parameter", "parameter",
+    "sample", "sample", "sample", "sample",
+    "sediment", "sediment", "sediment",
+    "sediment", "sediment", "sediment", "sediment", "sediment", "sediment",
+    "lld", "lld", "sediment",
+    "analysis_method", "analysis_method", "analysis_method",
+    "analysis_method", "analysis_method", "analysis_method"
+  ),
+
+  `Type` = c(
+    "INTEGER", "TEXT", "TEXT",
+    "INTEGER", "REAL", "REAL", "REAL",
+    "TEXT", "TEXT", "TEXT", "TEXT",
+    "TEXT", "TEXT",
+    "INTEGER", "TEXT", "TEXT", "TEXT",
+    "REAL", "REAL", "INTEGER",
+    "REAL", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+    "REAL", "REAL", "REAL",
+    "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"
   ),
 
   `Description` = c(
-    "Unique identifier for the activity/monitoring program",
-    "Name of the activity or monitoring program",
-    "Unique code for the sampling site",
-    "Name of the sampling location",
-    "Longitude coordinate (decimal degrees)",
-    "Latitude coordinate (decimal degrees)",
-    "Distance to the nearest coastline",
-    "Country name",
-    "Country code",
-    "Municipality name",
-    "Name of the sea or coastal water body",
-    "Date and time when the sample was collected",
-    "Upper depth of the sampled interval",
-    "Lower depth of the sampled interval",
-    "Physical sample identification number",
-    "Number of values or replicates used to derive the measurement",
-    "Unique identifier for the chemical parameter",
-    "Name of the chemical parameter measured",
-    "Method or equipment used to take the sample",
-    "Laboratory analysis method used",
-    "Measured concentration or numerical result",
-    "Unit of measurement for the value",
-    "Mathematical operator (e.g., <, =) indicating if value is below detection limits",
-    "Limit of Detection (LOD) value",
-    "Limit of Quantification (LOQ) value"
+    "Surrogate key linking to the project table.",
+    "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.",
+    "Country name of the reporting institute.",
+    "Surrogate key linking to the site table.",
+    "Longitude coordinate (decimal degrees).",
+    "Latitude coordinate (decimal degrees).",
+    "Distance from the station to the nearest coastline (km).",
+    "Estimated country derived from station coordinates.",
+    "ISO country code, e.g. NO, DK.",
+    "Municipality name.",
+    "Name of the sea or coastal water body.",
+    "ICES parameter code, e.g. HG, CD.",
+    "Full name or description of the parameter.",
+    "Year of sampling.",
+    "Full sampling date (format DD/MM/YYYY).",
+    "Sample type code, e.g. GC (grab/core).",
+    "Full description of the sample type.",
+    "Upper boundary of the sampled sediment layer (m).",
+    "Lower boundary of the sampled sediment layer (m).",
+    "Sequential sub-sample index within a sample–parameter combination.",
+    "Measured concentration or numerical result.",
+    "Unit of measurement, e.g. ug/kg or %.",
+    "Basis of measurement code, e.g. D (dry weight).",
+    "Data quality flag code(s), e.g. < (below detection limit).",
+    "Validity flag code(s).",
+    "Concentration unit code for the reported value.",
+    "Limit of Detection (LOD) value.",
+    "Limit of Quantification (LOQ) value.",
+    "Measurement uncertainty.",
+    "Analysing laboratory code.",
+    "Sample storage method code.",
+    "Pre-treatment method code.",
+    "Sub-sampling method code.",
+    "Extraction / clean-up method code.",
+    "Analytical technique code, e.g. ICP-MS, AAS-GF."
   )
 )
 
 exported_columns_tbl
+
 ```

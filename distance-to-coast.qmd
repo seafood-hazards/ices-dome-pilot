@@ -10,7 +10,7 @@ The distance data is available in the `dist_to_coast` column of the [Site](db-sc
 ## Sediment Sites
 
 ### Distance Calculation
-![](./image/dist_to_coast_ices-dome.webp){.zoomable width=80%}
+![](./image/dist_to_coast_ices_dome.webp){.zoomable width=80%}
 
 ### Count of Four Groups
 

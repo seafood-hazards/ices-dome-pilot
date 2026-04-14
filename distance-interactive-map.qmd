@@ -1,5 +1,5 @@
 ---
-title: "Interactive Map of Core Locations"
+title: "Interactive Map of Site Locations"
 subtitle: Interactive map to view sediment core locations with meta information
 ---
 

@@ -6,7 +6,10 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-04-14
+### Added
+- Update all pages to replace vannmiljo data
+
 ## [0.1.0] - 2026-04-13
 ### Added
 - Initial Quarto pages
-
