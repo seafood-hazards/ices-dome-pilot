@@ -5,22 +5,6 @@ format:
     page-layout: full
 ---
 
-```{r}
-#| label: setup-download
-#| output: false
-
-db_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.0/pilot_ices_dome.sqlite"
-local_db_name <- "pilot_ices_dome.sqlite"
-
-if (!file.exists(local_db_name)) {
-  options(timeout = 600)
-  download.file(db_url, destfile = local_db_name, mode = "wb")
-  message("Database downloaded.")
-} else {
-  message("Using existing local database.")
-}
-```
-
 ```{=html}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
@@ -71,7 +55,13 @@ if (!file.exists(local_db_name)) {
 ```{ojs}
 //| output: false
 
-db = FileAttachment("pilot_ices_dome.sqlite").sqlite()
+db = {
+  const StratumSQLite = await window._stratumSQLite;
+  return StratumSQLite.open(window._dbPath, {
+    sqlJsPath: window._sqljsBase,
+    cacheKey:  "pilot-ices-dome@v0.1.1",
+  });
+}
 
 L = require("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js")
 
@@ -190,8 +180,8 @@ function markerColor(v) {
 
 function fmtVal(v) {
   return v == null ? "N/A"
-    : v >= 1000  ? (v / 1000).toFixed(2) + " mg/kg"
-    : v.toFixed(1) + " µg/kg"
+    : v >= 1000  ? (v / 1000).toFixed(0) + " mg/kg"
+    : v.toFixed(0) + " µg/kg"
 }
 
 // --- Render / update map ---
@@ -248,8 +238,8 @@ function fmtVal(v) {
       <div style="font-size:11px;color:#555">Avg (µg/kg) · ${year_start}–${year_end}</div>
       <div class="legend-bar"></div>
       <div class="legend-labels">
-        <span>${fmtVal(value_min)}</span>
-        <span>${fmtVal((value_min + value_max) / 2)}</span>
+        <span>${fmtVal(value_min)}</span> &nbsp;
+        <span>${fmtVal((value_min + value_max) / 2)}</span> &nbsp;
         <span>${fmtVal(value_max)}</span>
       </div>
     `
