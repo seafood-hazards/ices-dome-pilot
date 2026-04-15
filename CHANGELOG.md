@@ -6,6 +6,13 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-04-15
+### Fixed
+- Interactive sediment map
+
+### Added
+- DOI link to Zenodo in README
+
 ## [0.1.2] - 2026-04-15
 ### Added
 - Interactive sediment map
