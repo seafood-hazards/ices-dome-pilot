@@ -1,5 +1,13 @@
 project:
   type: website
+  pre-render: download_resources.R
+  resources:
+    - pilot_ices_dome.sqlite
+    - pilot_ices_dome.tsv.tsv.gz
+    - libs/sqljs/
+  render:
+    - "*.qmd"
+    - "!CHANGELOG.md"
 
 website:
   title: "ICES-DOME Pilot"
@@ -28,6 +36,8 @@ website:
         menu:
           - text: "Pilot DB Viewer"
             href: pilot-db-viewer.qmd
+          - text: "Trace Element Map"
+            href: sediment-map.qmd
 
 format:
   html:
