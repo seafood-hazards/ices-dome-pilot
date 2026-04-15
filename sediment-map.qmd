@@ -288,7 +288,7 @@ point_data = {
       s2.station                    AS Station,
       ROUND(s2.longitude, 2)        AS Longitude,
       ROUND(s2.latitude,  2)        AS Latitude,
-      s3.year                       AS Year,
+      CAST(s3.year AS TEXT)         AS Year,
       s3.date                       AS Date,
       s3.sample_type_description    AS Tool,
       p2.param                      AS Param,
