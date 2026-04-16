@@ -96,6 +96,7 @@ viewof selected_element = Inputs.select(elements, {
   value: elements[0]
 })
 
+// --- Year range ---
 year_range_result = db.query(`
   SELECT MIN(s3.year) AS min_year, MAX(s3.year) AS max_year
   FROM sediment s
@@ -115,10 +116,32 @@ viewof year_end = Inputs.range(
   [min_year, max_year],
   { label: "Year to:", step: 1, value: max_year }
 )
+
+// --- Country list (updates when element changes) ---
+country_result = db.query(`
+  SELECT DISTINCT p.country
+  FROM sediment s
+  JOIN project p ON p.project_id = s.project_id
+  WHERE s.param = '${selected_element.value}'
+    AND p.country IS NOT NULL
+  ORDER BY p.country
+`)
+
+country_options = ["All", ...country_result.map(r => r.country)]
+
+viewof selected_country = Inputs.select(country_options, {
+  label: "Country:",
+  value: "All"
+})
 ```
 
 ```{ojs}
 //| panel: fill
+
+// Reusable country WHERE fragment — empty string when "All" is selected
+country_filter = selected_country === "All"
+  ? ""
+  : `AND p.country = '${selected_country}'`
 
 // --- Value range query (for legend and colour scale) ---
 value_range_result = db.query(`
@@ -137,10 +160,12 @@ value_range_result = db.query(`
         END
       ) AS avg_value
     FROM sediment s
-    JOIN site s2   ON s2.site_id   = s.site_id
-    JOIN sample s3 ON s3.sample_id = s.sample_id
+    JOIN site    s2 ON s2.site_id   = s.site_id
+    JOIN sample  s3 ON s3.sample_id = s.sample_id
+    JOIN project p  ON p.project_id = s.project_id
     WHERE s.param = '${selected_element.value}'
       AND s3.year BETWEEN ${year_start} AND ${year_end}
+      ${country_filter}
     GROUP BY s.param, s2.longitude, s2.latitude
   ) t
   GROUP BY param
@@ -162,16 +187,18 @@ map_data = db.query(`
       END
     ) AS avg_value_ug_per_kg
   FROM sediment s
-  JOIN site s2   ON s2.site_id   = s.site_id
-  JOIN sample s3 ON s3.sample_id = s.sample_id
+  JOIN site    s2 ON s2.site_id   = s.site_id
+  JOIN sample  s3 ON s3.sample_id = s.sample_id
+  JOIN project p  ON p.project_id = s.project_id
   WHERE s.param = '${selected_element.value}'
     AND s3.year >= ${year_start}
     AND s3.year <= ${year_end}
     AND s.value IS NOT NULL
+    ${country_filter}
   GROUP BY s2.longitude, s2.latitude
 `)
 
-// --- Colour scale using element+year-specific range ---
+// --- Colour scale using element + year + country specific range ---
 colorScale = d3.scaleSequential()
   .domain([value_min, value_max])
   .interpolator(d3.interpolateYlOrRd)
@@ -199,7 +226,6 @@ function fmtVal(v) {
       attribution: "© OpenStreetMap contributors"
     }).addTo(map)
 
-    // --- Home button (added below the zoom control) ---
     const HomeControl = L.Control.extend({
       options: { position: "topleft" },
       onAdd(map) {
@@ -216,7 +242,6 @@ function fmtVal(v) {
     })
     new HomeControl().addTo(map)
 
-    // --- Legend ---
     const LegendControl = L.Control.extend({
       options: { position: "bottomright" },
       onAdd() {
@@ -233,12 +258,15 @@ function fmtVal(v) {
 
   const { _map: map, _markers: markers } = container
 
-  // Update legend content whenever element or year range changes
+  // Update legend — includes country in subtitle when filtered
   const legendEl = map.getContainer().querySelector("#map-legend")
   if (legendEl) {
+    const countryLabel = selected_country === "All" ? "All countries" : selected_country
     legendEl.innerHTML = `
       <div class="legend-title">${selected_element.label}</div>
-      <div style="font-size:11px;color:#555">Avg (µg/kg) · ${year_start}–${year_end}</div>
+      <div style="font-size:11px;color:#555">
+        Avg (µg/kg) · ${year_start}–${year_end} · ${countryLabel}
+      </div>
       <div class="legend-bar"></div>
       <div class="legend-labels">
         <span>${fmtVal(value_min)}</span> &nbsp;
@@ -276,7 +304,7 @@ function fmtVal(v) {
 
 map_data.length === 0
   ? md`*No data found for this selection.*`
-  : md`**${selected_element.label}** · ${year_start}–${year_end} · **${map_data.length}** locations · values in µg/kg`
+  : md`**${selected_element.label}** · ${year_start}–${year_end} · ${selected_country} · **${map_data.length}** locations · values in µg/kg`
 ```
 
 ```{ojs}
@@ -285,6 +313,10 @@ map_data.length === 0
 point_data = {
   const p = clicked_point
   if (!p) return []
+  // In the detail query the project alias is p1, so adjust the country filter alias
+  const detail_country_filter = selected_country === "All"
+    ? ""
+    : `AND p1.country = '${selected_country}'`
   return db.query(`
     SELECT
       p1.project                    AS Project,
@@ -311,6 +343,7 @@ point_data = {
       AND s3.year <= ${year_end}
       AND s2.longitude = ${p.lon}
       AND s2.latitude  = ${p.lat}
+      ${detail_country_filter}
     ORDER BY s3.year, s.sediment_no
   `)
 }
@@ -319,6 +352,5 @@ clicked_point
   ? md`### Measurements at (${clicked_point.lat.toFixed(2)}, ${clicked_point.lon.toFixed(2)})`
   : md`*Click a point on the map to see its measurements.*`
 
-// Return an empty html element instead of null to avoid OJS printing "null"
 clicked_point ? Inputs.table(point_data, { layout: "auto" }) : html`<span></span>`
 ```
