@@ -13,6 +13,10 @@ website:
   title: "ICES-DOME Pilot"
   navbar:
     search: true
+    right:
+      - icon: github
+        href: https://github.com/seafood-hazards/ices-dome-pilot
+        aria-label: GitHub
     left:
       - text: "Home"
         href: index.qmd
