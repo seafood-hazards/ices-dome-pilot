@@ -3,7 +3,6 @@ project:
   pre-render: download_resources.R
   resources:
     - pilot_ices_dome.sqlite
-    - pilot_ices_dome.tsv.tsv.gz
     - libs/sqljs/
   render:
     - "*.qmd"
