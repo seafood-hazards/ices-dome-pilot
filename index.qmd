@@ -20,22 +20,12 @@ Contaminants and biological effects of contaminants in biota](https://dome.ices.
 ### Count of Sediment Sites
 The table below summarizes the number of sediment sites collected across 19 countries between 1985 and 2024.
 
+{{< include _db-setup.qmd >}}
+
 ```{ojs}
 //| output: false
-
-db = {
-  const StratumSQLite = await window._stratumSQLite;
-  return StratumSQLite.open(window._dbPath, {
-    sqlJsPath: window._sqljsBase,
-    cacheKey:  "pilot-ices-dome@v0.1.1",
-  });
-}
 
 aq = require("arquero")
-```
-
-```{ojs}
-//| output: false
 
 // --- Query: long format counts per cruise type, year, and element ---
 counts_long = db.query(`
