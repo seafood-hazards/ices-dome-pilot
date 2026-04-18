@@ -6,6 +6,14 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-04-18
+### Changed
+- latitude and longitude order
+- data sources from data file to db
+
+### Added
+- link to GitHub on menu
+
 ## [0.1.5] - 2026-04-16
 ### Added
 - country list to sediment map

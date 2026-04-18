@@ -1,17 +1,7 @@
 options(timeout = 600)
 
-# ── TSV data ───────────────────────────────────────────────────────────────
-data_file_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.1/pilot_ices_dome.tsv.gz"
-local_data_file_name <- "pilot_ices_dome.tsv.gz"
-if (!file.exists(local_data_file_name)) {
-  download.file(data_file_url, destfile = local_data_file_name, mode = "wb")
-  message("TSV downloaded.")
-} else {
-  message("Using existing TSV.")
-}
-
 # ── SQLite database ────────────────────────────────────────────────────────
-db_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.1/pilot_ices_dome.sqlite"
+db_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.5/pilot_ices_dome.sqlite"
 local_db_file_name <- "pilot_ices_dome.sqlite"
 if (!file.exists(local_db_file_name)) {
   download.file(db_url, local_db_file_name, mode = "wb")
@@ -21,9 +11,9 @@ if (!file.exists(local_db_file_name)) {
 }
 
 # ── sql.js + stratum-sqlite ────────────────────────────────────────────────
-# All three files are downloaded once and served from the site.
+# All four files are downloaded once and served from the site.
 # sql-wasm.js and sql-wasm.wasm are the sql.js engine that stratum-sqlite uses.
-# stratum-sqlite.umd.js is the library that wraps sql.js with a clean API.
+# stratum-sqlite.umd.js and stratum-sqlite.esm.js are the libraries that wrap sql.js with a clean API.
 sqljs_dir <- "libs/sqljs"
 dir.create(sqljs_dir, recursive = TRUE, showWarnings = FALSE)
 

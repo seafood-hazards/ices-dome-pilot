@@ -54,16 +54,10 @@ format:
 </style>
 ```
 
+{{< include _db-setup.qmd >}}
+
 ```{ojs}
 //| output: false
-
-db = {
-  const StratumSQLite = await window._stratumSQLite;
-  return StratumSQLite.open(window._dbPath, {
-    sqlJsPath: window._sqljsBase,
-    cacheKey:  "pilot-ices-dome@v0.1.1",
-  });
-}
 
 L = require("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js")
 
@@ -166,7 +160,7 @@ value_range_result = db.query(`
     WHERE s.param = '${selected_element.value}'
       AND s3.year BETWEEN ${year_start} AND ${year_end}
       ${country_filter}
-    GROUP BY s.param, s2.longitude, s2.latitude
+    GROUP BY s.param, s2.latitude, s2.longitude
   ) t
   GROUP BY param
 `)
@@ -177,8 +171,8 @@ value_max = value_range_result[0]?.max_avg_value ?? 1
 // --- Map data query ---
 map_data = db.query(`
   SELECT
-    s2.longitude,
     s2.latitude,
+    s2.longitude,
     AVG(
       CASE
         WHEN s.unit = 'mg/kg' THEN s.value * 1000
@@ -195,7 +189,7 @@ map_data = db.query(`
     AND s3.year <= ${year_end}
     AND s.value IS NOT NULL
     ${country_filter}
-  GROUP BY s2.longitude, s2.latitude
+  GROUP BY s2.latitude, s2.longitude
 `)
 
 // --- Colour scale using element + year + country specific range ---
@@ -321,8 +315,8 @@ point_data = {
     SELECT
       p1.project                    AS Project,
       s2.station                    AS Station,
-      ROUND(s2.longitude, 2)        AS Longitude,
       ROUND(s2.latitude,  2)        AS Latitude,
+      ROUND(s2.longitude, 2)        AS Longitude,
       CAST(s3.year AS TEXT)         AS Year,
       s3.date                       AS Date,
       s3.sample_type_description    AS Tool,
