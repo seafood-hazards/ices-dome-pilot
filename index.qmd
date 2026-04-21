@@ -14,32 +14,58 @@ Contaminants and biological effects of contaminants in biota](https://dome.ices.
 
 #### Parameter Group
 
- * Metals and matalloids
+ * Metals and matalloids (Cobalt, Copper, Manganese, Molybdenum, Selenium, Zinc)
+ * Major inorganic constituents (Iodine)
 
-### Count of Projects
-The table below summarizes the number of projects .
+### Count of Sediment Sites
+The table below summarizes the number of sediment sites collected across 19 countries between 1985 and 2024.
 
-```{r}
-library(tidyverse)
-library(DT)
+{{< include _db-setup.qmd >}}
 
-# Read data file
-local_data_file_name <- "pilot_ices_dome.tsv.gz"
-df_ices_dome_sediment <- read_tsv(local_data_file_name)
-project_table <- df_ices_dome_sediment%>%
-  filter(param %in% c("CO", "CU", "I", "MN", "MO", "SE", "ZN")) %>%
-  mutate(param = factor(param, levels=c("CO", "CU", "I", "MN", "MO", "SE", "ZN"),
-                        labels = c("Co", "Cu", "I", "Mn", "Mo", "Se", "Zn"))) %>%
-  count(project, country, year, param) %>%
-  arrange(param) %>%
-  pivot_wider(names_from = param, values_from = n) %>%
-  arrange(project, country, year) %>%
-  mutate(project = factor(project), country = factor(country)) %>%
-  dplyr::select(Project = project, Country = country, Year = year,
-                Cobalt = Co, Copper = Cu, Iodine = I, Manganese = Mn, Molybdenum = Mo, Zinc = Zn, Selenium = Se)
+```{ojs}
+//| output: false
 
-datatable(project_table, filter = "top", rownames = FALSE, class = "nowrap", options = list(scrollX = TRUE))
+aq = require("arquero")
 
+// --- Query: long format counts per cruise type, year, and element ---
+counts_long = db.query(`
+    SELECT country,
+           year,
+           parameter,
+           COUNT(*) AS count
+    FROM (SELECT DISTINCT p2.project_id,
+                          p2.country,
+                          s2.site_id,
+                          s2.sample_id,
+                          CAST(s2.year AS TEXT) year,
+                          s.param,
+                          UPPER(SUBSTR(p1.param_description, 1, 1)) || LOWER(SUBSTR(p1.param_description, 2)) AS parameter
+          FROM sediment s
+                   JOIN parameter p1 ON p1.param = s.param
+                   JOIN sample s2 ON s2.sample_id = s.sample_id
+                   JOIN site s3 ON s3.site_id = s.site_id
+                   JOIN project p2 ON p2.project_id = s.project_id
+          WHERE p1.param_description IN ('cobalt', 'copper', 'iodine', 'manganese', 'molybdenum', 'selenium', 'zinc')) t
+    GROUP BY country, year, parameter
+`)
+
+// --- Pivot to wide format using Arquero ---
+elements_wide = ["Cobalt", "Copper", "Iodine", "Manganese", "Molybdenum", "Selenium", "Zinc"]
+
+counts_wide = aq.from(counts_long)
+  .groupby("country", "year")
+  .pivot("parameter", "count")
+  .orderby("country", "year")
+  .rename({ country: "Country", year: "Year" })
+  .objects()
+```
+
+```{ojs}
+Inputs.table(counts_wide, {
+  columns: ["Country", "Year", ...elements_wide],
+  layout: "auto",
+  rows: 20
+})
 ```
 
 ## Database Design and Creation

@@ -28,36 +28,13 @@ th {
 ```{r}
 library(tibble)
 
-tibble(
-  Name = c(
-    "project_id", "project", "purpose", "country", "institute"
-  ),
-  `Data Type` = c(
-    "INTEGER", "TEXT", "TEXT", "TEXT", "TEXT"
-  ),
-  PK = c(
-    "✓", "", "", "", ""
-  ),
-  FK = c(
-    "", "", "", "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, TRUE, TRUE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Auto-generated surrogate key.",
-    "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.",
-    "Purpose code(s), e.g. T~S (Temporal trend and Spatial).",
-    "Country name of the responsible institute.",
-    "Code for the reporting laboratory / institute."
-  ),
-  `Look Up` = c(
-    "MPROG",
-    "PURPM",
-    "",
-    "",
-    "RLABO"
-  )
+tribble(
+  ~Name,        ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
+  "project_id", "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.", "MPROG",
+  "project",    "TEXT",       "",  "",  "",         "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.", "PURPM",
+  "purpose",    "TEXT",       "",  "",  "✓",          "Purpose code(s), e.g. T~S (Temporal trend and Spatial).", "",
+  "country",    "TEXT",       "",  "",  "✓",          "Country name of the responsible institute.", "",
+  "institute",  "TEXT",       "",  "",  "✓",          "Code for the reporting laboratory / institute (maps to RLABO in code_lookup).", "RLABO"
 )
 ```
 
@@ -70,40 +47,18 @@ The `site` table holds the geographical location of each sampling station.
 ### Table Columns
 
 ```{r}
-tibble(
-  `Name` = c(
-    "site_id", "station", "longitude", "latitude",
-    "dist_to_coast", "country", "country_code",
-    "municipality", "sea_name"
-  ),
-  `Data Type` = c(
-    "TEXT", "TEXT", "REAL", "REAL",
-    "REAL", "TEXT", "TEXT",
-    "TEXT", "TEXT"
-  ),
-  `PK` = c(
-    "✓", "", "", "",
-    "", "", "",
-    "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE, FALSE,
-    TRUE, TRUE, TRUE,
-    TRUE, TRUE
-  ),
-  `Description` = c(
-    "Primary Key. Auto-generated surrogate key.",
-    "Station name.",
-    "Longitude coordinate (decimal degrees).",
-    "Latitude coordinate (decimal degrees).",
-    "Distance to the coast.",
-    "Country name.",
-    "Country code (e.g., NO).",
-    "Municipality name.",
-    "Name of the sea or coastal water body."
-  )
+tribble(
+  ~Name,           ~`Data Type`, ~PK, ~`NA Allowed`, ~Description,
+  "site_id",       "TEXT",       "✓", "",         "Primary Key. Auto-generated surrogate key.",
+  "station",       "TEXT",       "",  "",         "Station name.",
+  "latitude",      "REAL",       "",  "",         "Latitude coordinate (decimal degrees).",
+  "longitude",     "REAL",       "",  "",         "Longitude coordinate (decimal degrees).",
+  "dist_to_coast", "REAL",       "",  "✓",          "Distance to the coast.",
+  "country",       "TEXT",       "",  "✓",          "Country name.",
+  "country_code",  "TEXT",       "",  "✓",          "Country code (e.g., NO).",
+  "municipality",  "TEXT",       "",  "✓",          "Municipality name.",
+  "sea_name",      "TEXT",       "",  "✓",          "Name of the sea or coastal water body."
 )
-
 ```
 
 ---
@@ -116,40 +71,15 @@ site, and date together.
 ### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "sample_id", "project_id", "site_id",
-    "year", "date", "sample_type", "sample_type_description"
-  ),
-  `Data Type` = c(
-    "INTEGER", "INTEGER", "INTEGER",
-    "INTEGER", "TEXT", "TEXT", "TEXT"
-  ),
-  PK = c(
-    "✓", "", "",
-    "", "", "", ""
-  ),
-  FK = c(
-    "", "project (project_id)", "site (site_id)",
-    "", "", "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE,
-    TRUE, TRUE, TRUE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Auto-generated surrogate key.",
-    "Foreign Key to the project table.",
-    "Foreign Key to the site table.",
-    "Year of sampling.",
-    "Full date of sampling (text, format DD/MM/YYYY).",
-    "Sample type code, e.g. GC (grab/core) or DA (dab).",
-    "Sample type description."
-  ),
-  `Look Up` = c(
-    "", "", "",
-    "", "", "SMTYP", "SMTYP"
-  )
+tribble(
+  ~Name,                     ~`Data Type`, ~PK, ~FK,                     ~`NA Allowed`, ~Description, ~`Look Up`,
+  "sample_id",               "INTEGER",    "✓", "",                      "",         "Primary Key. Auto-generated surrogate key.", "",
+  "project_id",              "INTEGER",    "",  "project (project_id)",  "",         "Foreign Key to the project table.", "",
+  "site_id",                 "INTEGER",    "",  "site (site_id)",       "",         "Foreign Key to the site table.", "",
+  "year",                    "INTEGER",    "",  "",                      "✓",          "Year of sampling.", "",
+  "date",                    "TEXT",       "",  "",                      "✓",          "Full date of sampling (text, format DD/MM/YYYY).", "",
+  "sample_type",             "TEXT",       "",  "",                      "✓",          "Sample type code, e.g. GC (grab/core) or DA (dab).", "SMTYP",
+  "sample_type_description", "TEXT",       "",  "",                      "✓",          "Sample type description.", "SMTYP"
 )
 ```
 
@@ -164,29 +94,13 @@ values (e.g. `T~S`) by storing one row per individual component code.
 ### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "data_col", "code_type", "raw_code", "code", "description"
-  ),
-  `Data Type` = c(
-    "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"
-  ),
-  PK = c(
-    "✓", "✓", "✓", "✓", ""
-  ),
-  FK = c(
-    "", "", "", "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE, FALSE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Column name in the database that contains this code (e.g. purpose, qflag).",
-    "Primary Key. Code type / domain from the ICES vocabulary (e.g. PURPM, QFLAG).",
-    "Primary Key. The original raw value as it appears in the data (e.g. T~S).",
-    "Primary Key. Individual split code derived from raw_code (e.g. T or S).",
-    "Human-readable description of the individual code."
-  )
+tribble(
+  ~Name,         ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description,
+  "data_col",    "TEXT",       "✓", "",  "",         "Primary Key. Column name in the database that contains this code (e.g. purpose, qflag).",
+  "code_type",   "TEXT",       "✓", "",  "",         "Primary Key. Code type / domain from the ICES vocabulary (e.g. PURPM, QFLAG).",
+  "raw_code",    "TEXT",       "✓", "",  "",         "Primary Key. The original raw value as it appears in the data (e.g. T~S).",
+  "code",        "TEXT",       "✓", "",  "",         "Primary Key. Individual split code derived from raw_code (e.g. T or S).",
+  "description", "TEXT",       "",  "",  "✓",          "Human-readable description of the individual code."
 )
 ```
 
@@ -200,36 +114,12 @@ measured, together with its parent parameter group.
 ### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "param", "param_description",
-    "group_code", "group_description"
-  ),
-  `Data Type` = c(
-    "TEXT", "TEXT",
-    "TEXT", "TEXT"
-  ),
-  PK = c(
-    "✓", "",
-    "", ""
-  ),
-  FK = c(
-    "", "",
-    "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, TRUE,
-    TRUE, TRUE
-  ),
-  Description = c(
-    "Primary Key. ICES parameter code, e.g. HG, CD, GSMF2000.",
-    "Full name or description of the parameter.",
-    "Parameter group code, e.g. I-MET, P-PHY.",
-    "Full name of the parameter group."
-  ),
-  `Look Up` = c(
-    "PARAM", "PARAM", "Pargroup", "Pargroup"
-  )
+tribble(
+  ~Name,               ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
+  "param",             "TEXT",       "✓", "",  "",         "Primary Key. ICES parameter code, e.g. HG, CD, GSMF2000.", "PARAM",
+  "param_description", "TEXT",       "",  "",  "✓",          "Full name or description of the parameter.", "PARAM",
+  "group_code",        "TEXT",       "",  "",  "✓",          "Parameter group code, e.g. I-MET, P-PHY.", "Pargroup",
+  "group_description", "TEXT",       "",  "",  "✓",          "Full name of the parameter group.", "Pargroup"
 )
 ```
 
@@ -243,28 +133,12 @@ The `lld` table stores the Limit of Detection (LOD) and Limit of Quantification
 ### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "lld_id", "param", "lod", "loq"
-  ),
-  `Data Type` = c(
-    "INTEGER", "TEXT", "REAL", "REAL"
-  ),
-  PK = c(
-    "✓", "", "", ""
-  ),
-  FK = c(
-    "", "parameter (param)", "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, TRUE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Auto-generated surrogate key.",
-    "Foreign Key to the parameter table.",
-    "Limit of Detection value.",
-    "Limit of Quantification value."
-  )
+tribble(
+  ~Name,    ~`Data Type`, ~PK, ~FK,                ~`NA Allowed`, ~Description,
+  "lld_id", "INTEGER",    "✓", "",                 "",         "Primary Key. Auto-generated surrogate key.",
+  "param",  "TEXT",       "",  "parameter (param)", "",         "Foreign Key to the parameter table.",
+  "lod",    "REAL",       "",  "",                 "✓",          "Limit of Detection value.",
+  "loq",    "REAL",       "",  "",                 "✓",          "Limit of Quantification value."
 )
 ```
 
@@ -279,47 +153,16 @@ parameter measurement.
 ### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "analysis_id", "param", "labo",
-    "metst", "metpt",
-    "metps", "metcx", "metoa"
-  ),
-  `Data Type` = c(
-    "INTEGER", "TEXT", "TEXT",
-    "TEXT", "TEXT",
-    "TEXT", "TEXT", "TEXT"
-  ),
-  PK = c(
-    "✓", "", "",
-    "", "",
-    "", "", ""
-  ),
-  FK = c(
-    "", "parameter (param)", "",
-    "", "",
-    "", "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, TRUE, TRUE,
-    TRUE, TRUE,
-    TRUE, TRUE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Auto-generated surrogate key.",
-    "Foreign Key to the parameter table.",
-    "Analysing laboratory code.",
-    "Sample storage method code.",
-    "Purification/separation method code.",
-    "Chemical fixation/preservation method code.",
-    "Chemical extraction method code.",
-    "Analytical method code, e.g. ICP-MS, AAS-GF."
-  ),
-  `Look Up` = c(
-    "", "", "RLABO",
-    "METST", "METPS",
-    "METFP", "METCX", "METOA"
-  )
+tribble(
+  ~Name,         ~`Data Type`, ~PK, ~FK,                ~`NA Allowed`, ~Description, ~`Look Up`,
+  "analysis_id", "INTEGER",    "✓", "",                 "",         "Primary Key. Auto-generated surrogate key.", "",
+  "param",       "TEXT",       "",  "parameter (param)", "✓",          "Foreign Key to the parameter table.", "",
+  "labo",        "TEXT",       "",  "",                 "✓",          "Analysing laboratory code.", "RLABO",
+  "metst",       "TEXT",       "",  "",                 "✓",          "Sample storage method code.", "METST",
+  "metpt",       "TEXT",       "",  "",                 "✓",          "Purification/separation method code.", "METPS",
+  "metps",       "TEXT",       "",  "",                 "✓",          "Chemical fixation/preservation method code.", "METFP",
+  "metcx",       "TEXT",       "",  "",                 "✓",          "Chemical extraction method code.", "METCX",
+  "metoa",       "TEXT",       "",  "",                 "✓",          "Analytical method code, e.g. ICP-MS, AAS-GF.", "METOA"
 )
 ```
 
@@ -333,30 +176,11 @@ for specific analyses.
 #### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "ref_id", "ref", "ref_description"
-  ),
-  `Data Type` = c(
-    "INTEGER", "TEXT", "TEXT"
-  ),
-  PK = c(
-    "✓", "", ""
-  ),
-  FK = c(
-    "", "", ""
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Auto-generated surrogate key.",
-    "Short reference code, e.g. EPA 6020 or ISO11885:2007.",
-    "Full title or description of the reference document."
-  ),
-  `Look Up` = c(
-    "", "REFSK", "REFSK"
-  )
+tribble(
+  ~Name,             ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
+  "ref_id",          "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.", "",
+  "ref",             "TEXT",       "",  "",  "",         "Short reference code, e.g. EPA 6020 or ISO11885:2007.", "REFSK",
+  "ref_description", "TEXT",       "",  "",  "✓",          "Full title or description of the reference document.", "REFSK"
 )
 ```
 
@@ -371,71 +195,27 @@ a sampling event.
 #### Table Columns
 
 ```{r}
-tibble(
-  Name = c(
-    "project_id", "site_id", "sample_id", "param", "sediment_no",
-    "depth_from", "depth_to", "value", "unit", "basis",
-    "qflag", "vflag", "uncrt", "metcu",
-    "sub_no", "dcflag",
-    "lld_id", "analysis_id", "ref_id"
-  ),
-  `Data Type` = c(
-    "INTEGER", "INTEGER", "INTEGER", "TEXT", "INTEGER",
-    "REAL", "REAL", "REAL", "TEXT", "TEXT",
-    "TEXT", "TEXT", "REAL", "TEXT",
-    "TEXT", "TEXT",
-    "INTEGER", "INTEGER", "INTEGER"
-  ),
-  PK = c(
-    "✓", "✓", "✓", "✓", "✓",
-    "", "", "", "", "",
-    "", "", "", "",
-    "", "",
-    "", "", ""
-  ),
-  FK = c(
-    "project (project_id)", "site (site_id)", "sample (sample_id)",
-    "parameter (param)", "",
-    "", "", "", "", "",
-    "", "", "", "",
-    "", "",
-    "lld (lld_id)", "analysis_method (analysis_id)", "reference (ref_id)"
-  ),
-  `NA Allowed` = c(
-    FALSE, FALSE, FALSE, FALSE, FALSE,
-    TRUE, TRUE, TRUE, TRUE, TRUE,
-    TRUE, TRUE, TRUE, TRUE,
-    TRUE, TRUE,
-    TRUE, TRUE, TRUE
-  ),
-  Description = c(
-    "Primary Key. Foreign Key to the project table.",
-    "Primary Key. Foreign Key to the site table.",
-    "Primary Key. Foreign Key to the sample table.",
-    "Primary Key. Foreign Key to the parameter table.",
-    "Primary Key. Sequential sub-sample index within a sample–parameter combination.",
-    "Upper depth of the sediment layer (m).",
-    "Lower depth of the sediment layer (m).",
-    "Measured concentration or numerical result.",
-    "Unit of measurement, e.g. ug/kg or %.",
-    "Basis of measurement code, e.g. D (dry weight).",
-    "Data quality flag code (may be multi-value, e.g. <).",
-    "Validity flag code.",
-    "Measurement uncertainty.",
-    "Method of calculating uncertainty.",
-    "Sub-sample number within the physical core.",
-    "Data conversion flag code(s).",
-    "Foreign Key to the lld table.",
-    "Foreign Key to the analysis_method table.",
-    "Foreign Key to the reference table."
-  ),
-  `Look Up` = c(
-    "", "", "", "", "",
-    "", "", "", "", "BASIS",
-    "QFLAG", "VFLAG", "", "METCU",
-    "", "DCFLG",
-    "", "", ""
-  )
+tribble(
+  ~Name,         ~`Data Type`, ~PK, ~FK,                               ~`NA Allowed`, ~Description, ~`Look Up`,
+  "project_id",  "INTEGER",    "✓", "project (project_id)",            "",         "Primary Key. Foreign Key to the project table.", "",
+  "site_id",     "INTEGER",    "✓", "site (site_id)",               "",         "Primary Key. Foreign Key to the site table.", "",
+  "sample_id",   "INTEGER",    "✓", "sample (sample_id)",             "",         "Primary Key. Foreign Key to the sample table.", "",
+  "param",       "TEXT",       "✓", "parameter (param)",              "",         "Primary Key. Foreign Key to the parameter table.", "",
+  "sediment_no", "INTEGER",    "✓", "",                                "",         "Primary Key. Sequential sub-sample index within a sample–parameter combination.",  "",
+  "depth_from",  "REAL",       "",  "",                                "✓",          "Upper depth of the sediment layer (m).", "",
+  "depth_to",    "REAL",       "",  "",                                "✓",          "Lower depth of the sediment layer (m).", "",
+  "value",       "REAL",       "",  "",                                "✓",          "Measured concentration or numerical result.", "",
+  "unit",        "TEXT",       "",  "",                                "✓",          "Unit of measurement, e.g. ug/kg or %.", "",
+  "basis",       "TEXT",       "",  "",                                "✓",          "Basis of measurement code, e.g. D (dry weight).", "BASIS",
+  "qflag",       "TEXT",       "",  "",                                "✓",          "Data quality flag code (may be multi-value, e.g. <).", "QFLAG",
+  "vflag",       "TEXT",       "",  "",                                "✓",          "Validity flag code.", "VFLAG",
+  "uncrt",       "REAL",       "",  "",                                "✓",          "Measurement uncertainty.", "",
+  "metcu",       "TEXT",       "",  "",                                "✓",          "Method of calculating uncertainty.", "METCU",
+  "sub_no",      "TEXT",       "",  "",                                "✓",          "Sub-sample number within the physical core.", "",
+  "dcflag",      "TEXT",       "",  "",                                "✓",          "Data conversion flag code(s).", "DCFLG",
+  "lld_id",      "INTEGER",    "",  "lld (lld_id)",                    "✓",          "Foreign Key to the lld table.", "",
+  "analysis_id", "INTEGER",    "",  "analysis_method (analysis_id)",   "✓",          "Foreign Key to the analysis_method table.", "",
+  "ref_id",      "INTEGER",    "",  "reference (ref_id)",              "✓",          "Foreign Key to the reference table.", ""
 )
 
 ```
