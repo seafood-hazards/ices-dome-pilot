@@ -20,6 +20,8 @@ website:
         menu:
           - text: "DB Schema"
             href: db-schema.qmd
+          - text: "Data Preparation"
+            href: data-preparation.qmd
       - text: "Geospatial Analysis"
         menu:
           - text: "Distance to Coast"
