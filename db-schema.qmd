@@ -19,6 +19,12 @@ purpose, country, and responsible institute that generated the data.
 
 ### Table Columns
 
+```{css, echo=FALSE}
+th {
+  white-space: nowrap;
+}
+```
+
 ```{r}
 library(tibble)
 
@@ -41,9 +47,16 @@ tibble(
   Description = c(
     "Primary Key. Auto-generated surrogate key.",
     "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.",
-    "Purpose code(s), e.g. T~S (trend and surveillance).",
+    "Purpose code(s), e.g. T~S (Temporal trend and Spatial).",
     "Country name of the responsible institute.",
-    "Code for the reporting laboratory / institute (maps to RLABO in code_lookup)."
+    "Code for the reporting laboratory / institute."
+  ),
+  `Look Up` = c(
+    "MPROG",
+    "PURPM",
+    "",
+    "",
+    "RLABO"
   )
 )
 ```
@@ -80,7 +93,7 @@ tibble(
   ),
   `Description` = c(
     "Primary Key. Auto-generated surrogate key.",
-    "Station identifier code.",
+    "Station name.",
     "Longitude coordinate (decimal degrees).",
     "Latitude coordinate (decimal degrees).",
     "Distance to the coast.",
@@ -132,6 +145,10 @@ tibble(
     "Full date of sampling (text, format DD/MM/YYYY).",
     "Sample type code, e.g. GC (grab/core) or DA (dab).",
     "Sample type description."
+  ),
+  `Look Up` = c(
+    "", "", "",
+    "", "", "SMTYP", "SMTYP"
   )
 )
 ```
@@ -209,6 +226,9 @@ tibble(
     "Full name or description of the parameter.",
     "Parameter group code, e.g. I-MET, P-PHY.",
     "Full name of the parameter group."
+  ),
+  `Look Up` = c(
+    "PARAM", "PARAM", "Pargroup", "Pargroup"
   )
 )
 ```
@@ -290,10 +310,15 @@ tibble(
     "Foreign Key to the parameter table.",
     "Analysing laboratory code.",
     "Sample storage method code.",
-    "Pre-treatment method code.",
-    "Sub-sampling method code.",
-    "Extraction / clean-up method code.",
+    "Purification/separation method code.",
+    "Chemical fixation/preservation method code.",
+    "Chemical extraction method code.",
     "Analytical method code, e.g. ICP-MS, AAS-GF."
+  ),
+  `Look Up` = c(
+    "", "", "RLABO",
+    "METST", "METPS",
+    "METFP", "METCX", "METOA"
   )
 )
 ```
@@ -328,6 +353,9 @@ tibble(
     "Primary Key. Auto-generated surrogate key.",
     "Short reference code, e.g. EPA 6020 or ISO11885:2007.",
     "Full title or description of the reference document."
+  ),
+  `Look Up` = c(
+    "", "REFSK", "REFSK"
   )
 )
 ```
@@ -394,12 +422,19 @@ tibble(
     "Data quality flag code (may be multi-value, e.g. <).",
     "Validity flag code.",
     "Measurement uncertainty.",
-    "Concentration unit code for the reported value.",
+    "Method of calculating uncertainty.",
     "Sub-sample number within the physical core.",
-    "Data completeness flag code(s).",
+    "Data conversion flag code(s).",
     "Foreign Key to the lld table.",
     "Foreign Key to the analysis_method table.",
     "Foreign Key to the reference table."
+  ),
+  `Look Up` = c(
+    "", "", "", "", "",
+    "", "", "", "", "BASIS",
+    "QFLAG", "VFLAG", "", "METCU",
+    "", "DCFLG",
+    "", "", ""
   )
 )
 
