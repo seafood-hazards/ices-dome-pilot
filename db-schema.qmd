@@ -30,9 +30,9 @@ library(tibble)
 
 tribble(
   ~Name,        ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
-  "project_id", "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.", "MPROG",
-  "project",    "TEXT",       "",  "",  "",         "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.", "PURPM",
-  "purpose",    "TEXT",       "",  "",  "✓",          "Purpose code(s), e.g. T~S (Temporal trend and Spatial).", "",
+  "project_id", "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.", "",
+  "project",    "TEXT",       "",  "",  "",         "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.", "MPROG",
+  "purpose",    "TEXT",       "",  "",  "✓",          "Purpose code(s), e.g. T~S (Temporal trend and Spatial).", "PURPM",
   "country",    "TEXT",       "",  "",  "✓",          "Country name of the responsible institute.", "",
   "institute",  "TEXT",       "",  "",  "✓",          "Code for the reporting laboratory / institute (maps to RLABO in code_lookup).", "RLABO"
 )
@@ -159,8 +159,8 @@ tribble(
   "param",       "TEXT",       "",  "parameter (param)", "✓",          "Foreign Key to the parameter table.", "",
   "labo",        "TEXT",       "",  "",                 "✓",          "Analysing laboratory code.", "RLABO",
   "metst",       "TEXT",       "",  "",                 "✓",          "Sample storage method code.", "METST",
-  "metpt",       "TEXT",       "",  "",                 "✓",          "Purification/separation method code.", "METPS",
-  "metps",       "TEXT",       "",  "",                 "✓",          "Chemical fixation/preservation method code.", "METFP",
+  "metpt",       "TEXT",       "",  "",                 "✓",          "Purification/separation method code.", "METPT",
+  "metps",       "TEXT",       "",  "",                 "✓",          "Chemical fixation/preservation method code.", "METPS",
   "metcx",       "TEXT",       "",  "",                 "✓",          "Chemical extraction method code.", "METCX",
   "metoa",       "TEXT",       "",  "",                 "✓",          "Analytical method code, e.g. ICP-MS, AAS-GF.", "METOA"
 )

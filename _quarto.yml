@@ -43,6 +43,8 @@ website:
         menu:
           - text: "Pilot DB Viewer"
             href: pilot-db-viewer.qmd
+          - text: "Code Lookup Browser"
+            href: code-lookup-browser.qmd
           - text: "Trace Element Map"
             href: sediment-map.qmd
 
