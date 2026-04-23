@@ -204,6 +204,7 @@ tribble(
   "sediment_no", "INTEGER",    "✓", "",                                "",         "Primary Key. Sequential sub-sample index within a sample–parameter combination.",  "",
   "depth_from",  "REAL",       "",  "",                                "✓",          "Upper depth of the sediment layer (m).", "",
   "depth_to",    "REAL",       "",  "",                                "✓",          "Lower depth of the sediment layer (m).", "",
+  "matrix",      "TEXT",       "",  "",                                "✓",          "Matrix being analyzed.", "MATRX",
   "value",       "REAL",       "",  "",                                "✓",          "Measured concentration or numerical result.", "",
   "unit",        "TEXT",       "",  "",                                "✓",          "Unit of measurement, e.g. ug/kg or %.", "",
   "basis",       "TEXT",       "",  "",                                "✓",          "Basis of measurement code, e.g. D (dry weight).", "BASIS",
