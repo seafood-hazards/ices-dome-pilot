@@ -30,6 +30,10 @@ th { white-space: nowrap; }
 /* Space before "entries per page" label */
 .dt-length label { gap: 6px; }
 .dt-length select { margin-right: 4px; }
+
+/* Remove Quarto cell wrapper margins inside the selector flex row
+   so the selector and button align to the same baseline */
+.selector-row > div { margin: 0 !important; padding: 0 !important; }
 </style>
 ```
 
@@ -60,26 +64,26 @@ code_list = [
 ]
 ```
 
-```{ojs}
-//| output: false
-// mutable allows selected_code to be updated from inside an imperative block
-mutable selected_code = code_list[0]
+```{=html}
+<div class="selector-row" style="display:flex;align-items:flex-end;gap:12px;margin-bottom:0.5rem;">
 ```
 
 ```{ojs}
-// Flex row: selector and download button sit side by side
+// viewof correctly maintains visual state across reactive updates
+viewof selected_code = Inputs.select(code_list, {
+  label: "Code:",
+  format: d => d.label,
+  value: code_list[0],
+  width: 500
+})
+```
+
+```{ojs}
+// Download button — sits beside the selector via the flex wrapper above
 {
-  const row = html`<div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:1rem"></div>`
-
-  const sel = Inputs.select(code_list, {
-    label: "Code:",
-    format: d => d.label,
-    value: code_list[0],
-    width: 500
-  })
-
-  // Keep the mutable in sync whenever the selection changes
-  sel.addEventListener("input", () => { mutable selected_code = sel.value })
+  // Invisible spacer matches the height of the "Code:" label above the selector,
+  // so the button bottom aligns with the select box bottom
+  const spacer = html`<div style="font-size:13px;line-height:1.5;visibility:hidden;">&nbsp;</div>`
 
   const btn = html`<button style="
     padding: 5px 14px;
@@ -89,10 +93,8 @@ mutable selected_code = code_list[0]
     border-radius: 4px;
     background: #f8f8f8;
     color: #000;
-    margin-bottom: 2px;
   ">⬇ Download CSV</button>`
 
-  // onclick reads lookup_data at click time (current reactive value)
   btn.onclick = () => {
     const rows = [["Raw Code", "Code", "Description"]]
     lookup_data.forEach(r =>
@@ -109,9 +111,14 @@ mutable selected_code = code_list[0]
     a.click()
   }
 
-  row.append(sel, btn)
-  return row
+  const container = html`<div style="display:flex;flex-direction:column;"></div>`
+  container.append(spacer, btn)
+  return container
 }
+```
+
+```{=html}
+</div>
 ```
 
 ```{ojs}
