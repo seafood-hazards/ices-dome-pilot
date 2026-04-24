@@ -19,16 +19,22 @@ purpose, country, and responsible institute that generated the data.
 
 ### Table Columns
 
+```{css, echo=FALSE}
+th {
+  white-space: nowrap;
+}
+```
+
 ```{r}
 library(tibble)
 
 tribble(
-  ~Name,        ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description,
-  "project_id", "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.",
-  "project",    "TEXT",       "",  "",  "",         "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.",
-  "purpose",    "TEXT",       "",  "",  "✓",          "Purpose code(s), e.g. T~S (trend and surveillance).",
-  "country",    "TEXT",       "",  "",  "✓",          "Country name of the responsible institute.",
-  "institute",  "TEXT",       "",  "",  "✓",          "Code for the reporting laboratory / institute (maps to RLABO in code_lookup)."
+  ~Name,        ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
+  "project_id", "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.", "",
+  "project",    "TEXT",       "",  "",  "",         "Monitoring programme code(s), e.g. CEMP or CEMP~NATL.", "MPROG",
+  "purpose",    "TEXT",       "",  "",  "✓",          "Purpose code(s), e.g. T~S (Temporal trend and Spatial).", "PURPM",
+  "country",    "TEXT",       "",  "",  "✓",          "Country name of the responsible institute.", "",
+  "institute",  "TEXT",       "",  "",  "✓",          "Code for the reporting laboratory / institute (maps to RLABO in code_lookup).", "RLABO"
 )
 ```
 
@@ -44,7 +50,7 @@ The `site` table holds the geographical location of each sampling station.
 tribble(
   ~Name,           ~`Data Type`, ~PK, ~`NA Allowed`, ~Description,
   "site_id",       "TEXT",       "✓", "",         "Primary Key. Auto-generated surrogate key.",
-  "station",       "TEXT",       "",  "",         "Station identifier code.",
+  "station",       "TEXT",       "",  "",         "Station name.",
   "latitude",      "REAL",       "",  "",         "Latitude coordinate (decimal degrees).",
   "longitude",     "REAL",       "",  "",         "Longitude coordinate (decimal degrees).",
   "dist_to_coast", "REAL",       "",  "✓",          "Distance to the coast.",
@@ -66,14 +72,14 @@ site, and date together.
 
 ```{r}
 tribble(
-  ~Name,                     ~`Data Type`, ~PK, ~FK,                     ~`NA Allowed`, ~Description,
-  "sample_id",               "INTEGER",    "✓", "",                      "",         "Primary Key. Auto-generated surrogate key.",
-  "project_id",              "INTEGER",    "",  "project (project_id)",  "",         "Foreign Key to the project table.",
-  "site_id",                 "INTEGER",    "",  "site (site_id)",       "",         "Foreign Key to the site table.",
-  "year",                    "INTEGER",    "",  "",                      "✓",          "Year of sampling.",
-  "date",                    "TEXT",       "",  "",                      "✓",          "Full date of sampling (text, format DD/MM/YYYY).",
-  "sample_type",             "TEXT",       "",  "",                      "✓",          "Sample type code, e.g. GC (grab/core) or DA (dab).",
-  "sample_type_description", "TEXT",       "",  "",                      "✓",          "Sample type description."
+  ~Name,                     ~`Data Type`, ~PK, ~FK,                     ~`NA Allowed`, ~Description, ~`Look Up`,
+  "sample_id",               "INTEGER",    "✓", "",                      "",         "Primary Key. Auto-generated surrogate key.", "",
+  "project_id",              "INTEGER",    "",  "project (project_id)",  "",         "Foreign Key to the project table.", "",
+  "site_id",                 "INTEGER",    "",  "site (site_id)",       "",         "Foreign Key to the site table.", "",
+  "year",                    "INTEGER",    "",  "",                      "✓",          "Year of sampling.", "",
+  "date",                    "TEXT",       "",  "",                      "✓",          "Full date of sampling (text, format DD/MM/YYYY).", "",
+  "sample_type",             "TEXT",       "",  "",                      "✓",          "Sample type code, e.g. GC (grab/core) or DA (dab).", "SMTYP",
+  "sample_type_description", "TEXT",       "",  "",                      "✓",          "Sample type description.", "SMTYP"
 )
 ```
 
@@ -109,11 +115,11 @@ measured, together with its parent parameter group.
 
 ```{r}
 tribble(
-  ~Name,               ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description,
-  "param",             "TEXT",       "✓", "",  "",         "Primary Key. ICES parameter code, e.g. HG, CD, GSMF2000.",
-  "param_description", "TEXT",       "",  "",  "✓",          "Full name or description of the parameter.",
-  "group_code",        "TEXT",       "",  "",  "✓",          "Parameter group code, e.g. I-MET, P-PHY.",
-  "group_description", "TEXT",       "",  "",  "✓",          "Full name of the parameter group."
+  ~Name,               ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
+  "param",             "TEXT",       "✓", "",  "",         "Primary Key. ICES parameter code, e.g. HG, CD, GSMF2000.", "PARAM",
+  "param_description", "TEXT",       "",  "",  "✓",          "Full name or description of the parameter.", "PARAM",
+  "group_code",        "TEXT",       "",  "",  "✓",          "Parameter group code, e.g. I-MET, P-PHY.", "Pargroup",
+  "group_description", "TEXT",       "",  "",  "✓",          "Full name of the parameter group.", "Pargroup"
 )
 ```
 
@@ -148,15 +154,15 @@ parameter measurement.
 
 ```{r}
 tribble(
-  ~Name,         ~`Data Type`, ~PK, ~FK,                ~`NA Allowed`, ~Description,
-  "analysis_id", "INTEGER",    "✓", "",                 "",         "Primary Key. Auto-generated surrogate key.",
-  "param",       "TEXT",       "",  "parameter (param)", "✓",          "Foreign Key to the parameter table.",
-  "labo",        "TEXT",       "",  "",                 "✓",          "Analysing laboratory code.",
-  "metst",       "TEXT",       "",  "",                 "✓",          "Sample storage method code.",
-  "metpt",       "TEXT",       "",  "",                 "✓",          "Pre-treatment method code.",
-  "metps",       "TEXT",       "",  "",                 "✓",          "Sub-sampling method code.",
-  "metcx",       "TEXT",       "",  "",                 "✓",          "Extraction / clean-up method code.",
-  "metoa",       "TEXT",       "",  "",                 "✓",          "Analytical method code, e.g. ICP-MS, AAS-GF."
+  ~Name,         ~`Data Type`, ~PK, ~FK,                ~`NA Allowed`, ~Description, ~`Look Up`,
+  "analysis_id", "INTEGER",    "✓", "",                 "",         "Primary Key. Auto-generated surrogate key.", "",
+  "param",       "TEXT",       "",  "parameter (param)", "✓",          "Foreign Key to the parameter table.", "",
+  "labo",        "TEXT",       "",  "",                 "✓",          "Analysing laboratory code.", "RLABO",
+  "metst",       "TEXT",       "",  "",                 "✓",          "Sample storage method code.", "METST",
+  "metpt",       "TEXT",       "",  "",                 "✓",          "Purification/separation method code.", "METPT",
+  "metps",       "TEXT",       "",  "",                 "✓",          "Chemical fixation/preservation method code.", "METPS",
+  "metcx",       "TEXT",       "",  "",                 "✓",          "Chemical extraction method code.", "METCX",
+  "metoa",       "TEXT",       "",  "",                 "✓",          "Analytical method code, e.g. ICP-MS, AAS-GF.", "METOA"
 )
 ```
 
@@ -171,10 +177,10 @@ for specific analyses.
 
 ```{r}
 tribble(
-  ~Name,             ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description,
-  "ref_id",          "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.",
-  "ref",             "TEXT",       "",  "",  "",         "Short reference code, e.g. EPA 6020 or ISO11885:2007.",
-  "ref_description", "TEXT",       "",  "",  "✓",          "Full title or description of the reference document."
+  ~Name,             ~`Data Type`, ~PK, ~FK, ~`NA Allowed`, ~Description, ~`Look Up`,
+  "ref_id",          "INTEGER",    "✓", "",  "",         "Primary Key. Auto-generated surrogate key.", "",
+  "ref",             "TEXT",       "",  "",  "",         "Short reference code, e.g. EPA 6020 or ISO11885:2007.", "REFSK",
+  "ref_description", "TEXT",       "",  "",  "✓",          "Full title or description of the reference document.", "REFSK"
 )
 ```
 
@@ -190,25 +196,27 @@ a sampling event.
 
 ```{r}
 tribble(
-  ~Name,         ~`Data Type`, ~PK, ~FK,                               ~`NA Allowed`, ~Description,
-  "project_id",  "INTEGER",    "✓", "project (project_id)",            "",         "Primary Key. Foreign Key to the project table.",
-  "site_id",     "INTEGER",    "✓", "site (site_id)",               "",         "Primary Key. Foreign Key to the site table.",
-  "sample_id",   "INTEGER",    "✓", "sample (sample_id)",             "",         "Primary Key. Foreign Key to the sample table.",
-  "param",       "TEXT",       "✓", "parameter (param)",              "",         "Primary Key. Foreign Key to the parameter table.",
-  "sediment_no", "INTEGER",    "✓", "",                                "",         "Primary Key. Sequential sub-sample index within a sample–parameter combination.",
-  "depth_from",  "REAL",       "",  "",                                "✓",          "Upper depth of the sediment layer (m).",
-  "depth_to",    "REAL",       "",  "",                                "✓",          "Lower depth of the sediment layer (m).",
-  "value",       "REAL",       "",  "",                                "✓",          "Measured concentration or numerical result.",
-  "unit",        "TEXT",       "",  "",                                "✓",          "Unit of measurement, e.g. ug/kg or %.",
-  "basis",       "TEXT",       "",  "",                                "✓",          "Basis of measurement code, e.g. D (dry weight).",
-  "qflag",       "TEXT",       "",  "",                                "✓",          "Data quality flag code (may be multi-value, e.g. <).",
-  "vflag",       "TEXT",       "",  "",                                "✓",          "Validity flag code.",
-  "uncrt",       "REAL",       "",  "",                                "✓",          "Measurement uncertainty.",
-  "metcu",       "TEXT",       "",  "",                                "✓",          "Method of measurement uncertainty.",
-  "sub_no",      "TEXT",       "",  "",                                "✓",          "Sub-sample number within the physical core.",
-  "dcflag",      "TEXT",       "",  "",                                "✓",          "Data completeness flag code(s).",
-  "lld_id",      "INTEGER",    "",  "lld (lld_id)",                    "✓",          "Foreign Key to the lld table.",
-  "analysis_id", "INTEGER",    "",  "analysis_method (analysis_id)",   "✓",          "Foreign Key to the analysis_method table.",
-  "ref_id",      "INTEGER",    "",  "reference (ref_id)",              "✓",          "Foreign Key to the reference table."
+  ~Name,         ~`Data Type`, ~PK, ~FK,                               ~`NA Allowed`, ~Description, ~`Look Up`,
+  "project_id",  "INTEGER",    "✓", "project (project_id)",            "",         "Primary Key. Foreign Key to the project table.", "",
+  "site_id",     "INTEGER",    "✓", "site (site_id)",               "",         "Primary Key. Foreign Key to the site table.", "",
+  "sample_id",   "INTEGER",    "✓", "sample (sample_id)",             "",         "Primary Key. Foreign Key to the sample table.", "",
+  "param",       "TEXT",       "✓", "parameter (param)",              "",         "Primary Key. Foreign Key to the parameter table.", "",
+  "sediment_no", "INTEGER",    "✓", "",                                "",         "Primary Key. Sequential sub-sample index within a sample–parameter combination.",  "",
+  "depth_from",  "REAL",       "",  "",                                "✓",          "Upper depth of the sediment layer (m).", "",
+  "depth_to",    "REAL",       "",  "",                                "✓",          "Lower depth of the sediment layer (m).", "",
+  "matrix",      "TEXT",       "",  "",                                "✓",          "Matrix being analyzed.", "MATRX",
+  "value",       "REAL",       "",  "",                                "✓",          "Measured concentration or numerical result.", "",
+  "unit",        "TEXT",       "",  "",                                "✓",          "Unit of measurement, e.g. ug/kg or %.", "",
+  "basis",       "TEXT",       "",  "",                                "✓",          "Basis of measurement code, e.g. D (dry weight).", "BASIS",
+  "qflag",       "TEXT",       "",  "",                                "✓",          "Data quality flag code (may be multi-value, e.g. <).", "QFLAG",
+  "vflag",       "TEXT",       "",  "",                                "✓",          "Validity flag code.", "VFLAG",
+  "uncrt",       "REAL",       "",  "",                                "✓",          "Measurement uncertainty.", "",
+  "metcu",       "TEXT",       "",  "",                                "✓",          "Method of calculating uncertainty.", "METCU",
+  "sub_no",      "TEXT",       "",  "",                                "✓",          "Sub-sample number within the physical core.", "",
+  "dcflag",      "TEXT",       "",  "",                                "✓",          "Data conversion flag code(s).", "DCFLG",
+  "lld_id",      "INTEGER",    "",  "lld (lld_id)",                    "✓",          "Foreign Key to the lld table.", "",
+  "analysis_id", "INTEGER",    "",  "analysis_method (analysis_id)",   "✓",          "Foreign Key to the analysis_method table.", "",
+  "ref_id",      "INTEGER",    "",  "reference (ref_id)",              "✓",          "Foreign Key to the reference table.", ""
 )
+
 ```

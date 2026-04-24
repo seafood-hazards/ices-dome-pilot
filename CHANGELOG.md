@@ -6,6 +6,11 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-04-24
+### Added
+- code lookup browser page
+- grain size parameter page
+
 ## [0.1.6] - 2026-04-18
 ### Changed
 - latitude and longitude order
