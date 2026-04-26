@@ -6,6 +6,16 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.9] - 2026-04-26
+### Removed
+- image files of distances to coast
+
+### Changed
+- all renv entries
+
+### Fixed
+- table column format
+
 ## [0.1.8] - 2026-04-24
 ### Fixed
 - selection box in code lookup browser page
