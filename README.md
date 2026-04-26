@@ -1,6 +1,6 @@
 # ICES-DOME Pilot Database
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19801382.svg)](https://doi.org/10.5281/zenodo.19801382)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19801654.svg)](https://doi.org/10.5281/zenodo.19801654)
 
 This repository contains the source Quarto Markdown documents for the [ICES-DOME Pilot Database](https://seafood-hazards.github.io/ices-dome-pilot/) website.
 
