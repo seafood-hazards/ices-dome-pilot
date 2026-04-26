@@ -3,6 +3,12 @@ title: "Data Preparation"
 subtitle: "Cleaning the ICES-DOME Dataset"
 ---
 
+```{css, echo=FALSE}
+th {
+  white-space: nowrap;
+}
+```
+
 This page outlines the data preparation steps required to standardise the ICES-DOME dataset.
 
 ## 1. Data Filtering

@@ -3,6 +3,12 @@ title: "DB Schema"
 subtitle: A proposed database design based on ICES-DOME Data
 ---
 
+```{css, echo=FALSE}
+th {
+  white-space: nowrap;
+}
+```
+
 The page shows the database schema diagram along with table definitions based on the ICES-DOME dataset.
 
 ## DB Schema Diagram
@@ -18,12 +24,6 @@ The `project` table captures the unique combinations of monitoring programme,
 purpose, country, and responsible institute that generated the data.
 
 ### Table Columns
-
-```{css, echo=FALSE}
-th {
-  white-space: nowrap;
-}
-```
 
 ```{r}
 library(tibble)
