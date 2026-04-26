@@ -45,8 +45,6 @@ website:
             href: pilot-db-viewer.qmd
           - text: "Code Lookup Browser"
             href: code-lookup-browser.qmd
-          - text: "Grain Size Codes"
-            href: grain-size-codes.qmd
           - text: "Trace Element Map"
             href: sediment-map.qmd
 

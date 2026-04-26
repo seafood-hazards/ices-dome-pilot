@@ -87,8 +87,10 @@ To facilitate efficient core and sample selection, distances to the nearest coas
 Data can be exported for both exploration and submission purposes.
 
 - See the [Export to Tabular File](./data-export.qmd) page for a description of a single tabular file format (`.tsv.gz`) that is extracted and merged from all database tables for data exploration.
+- See the [Sediment Particle Size Fractions](./sediment-fractions.qmd) page for a description of the conversion from raw grain-size measurements to standardised sediment particle fractions.
 
 ## Tools
 
 - See the [Pilot DB Viewer](./pilot-db-viewer.qmd) page for a read-only view of the pilot database.
 - See the [Sediment Trace Element Map](./sediment-map.qmd) page for an interactive map view of the trace elements.
+- See the [Code Lookup Browser](./code-lookup-browser.qmd) page for ICES vocabulary codes used in the database.
