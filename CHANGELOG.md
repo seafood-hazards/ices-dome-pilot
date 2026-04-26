@@ -6,6 +6,10 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-04-27
+### Fixed
+- sediment numbers
+
 ## [0.1.9] - 2026-04-26
 ### Removed
 - image files of distances to coast
