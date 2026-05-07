@@ -184,7 +184,7 @@ map_data = db.query(`
         WHEN s.unit = 'g/kg' THEN s.value * 1000
         ELSE NULL
       END
-    ) AS avg_value_ug_per_kg
+    ) AS avg_value
   FROM sediment s
   JOIN site    s2 ON s2.site_id   = s.site_id
   JOIN sample  s3 ON s3.sample_id = s.sample_id
@@ -278,10 +278,10 @@ function fmtVal(v) {
   mutable clicked_point = null
 
   for (const d of map_data) {
-    if (d.avg_value_ug_per_kg == null) continue
+    if (d.avg_value == null) continue
     const circle = L.circleMarker([d.latitude, d.longitude], {
       radius:      7,
-      fillColor:   markerColor(d.avg_value_ug_per_kg),
+      fillColor:   markerColor(d.avg_value),
       color:       "#333",
       weight:      0.8,
       opacity:     1,
@@ -289,7 +289,7 @@ function fmtVal(v) {
     })
     circle.bindTooltip(
       `<b>${selected_element.label}</b><br>
-       Avg: ${fmtVal(d.avg_value_ug_per_kg)}<br>
+       Avg: ${fmtVal(d.avg_value)}<br>
        (${year_start}–${year_end})`,
       { sticky: true }
     )
@@ -302,7 +302,7 @@ function fmtVal(v) {
 
 map_data.length === 0
   ? md`*No data found for this selection.*`
-  : md`**${selected_element.label}** · ${year_start}–${year_end} · ${selected_country} · **${map_data.length}** locations · values in µg/kg`
+  : md`**${selected_element.label}** · ${year_start}–${year_end} · ${selected_country} · **${map_data.length}** locations · values in mg/kg`
 ```
 
 ```{ojs}
