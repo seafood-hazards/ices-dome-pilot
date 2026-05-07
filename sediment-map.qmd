@@ -148,8 +148,10 @@ value_range_result = db.query(`
       s.param,
       AVG(
         CASE
-          WHEN s.unit = 'mg/kg' THEN s.value * 1000
-          WHEN s.unit = 'ug/kg' THEN s.value
+          WHEN s.unit = 'mg/kg' THEN s.value
+          WHEN s.unit = 'ug/g' THEN s.value
+          WHEN s.unit = 'ug/kg' THEN s.value / 1000
+          WHEN s.unit = 'g/kg' THEN s.value * 1000
           ELSE NULL
         END
       ) AS avg_value
@@ -158,6 +160,7 @@ value_range_result = db.query(`
     JOIN sample  s3 ON s3.sample_id = s.sample_id
     JOIN project p  ON p.project_id = s.project_id
     WHERE s.param = '${selected_element.value}'
+      AND s.unit IN ('mg/kg', 'ug/g', 'ug/kg', 'g/kg')
       AND s3.year BETWEEN ${year_start} AND ${year_end}
       ${country_filter}
     GROUP BY s.param, s2.latitude, s2.longitude
@@ -175,8 +178,10 @@ map_data = db.query(`
     s2.longitude,
     AVG(
       CASE
-        WHEN s.unit = 'mg/kg' THEN s.value * 1000
-        WHEN s.unit = 'ug/kg' THEN s.value
+        WHEN s.unit = 'mg/kg' THEN s.value
+        WHEN s.unit = 'ug/g' THEN s.value
+        WHEN s.unit = 'ug/kg' THEN s.value / 1000
+        WHEN s.unit = 'g/kg' THEN s.value * 1000
         ELSE NULL
       END
     ) AS avg_value_ug_per_kg
@@ -188,6 +193,7 @@ map_data = db.query(`
     AND s3.year >= ${year_start}
     AND s3.year <= ${year_end}
     AND s.value IS NOT NULL
+    AND s.unit IN ('mg/kg', 'ug/g', 'ug/kg', 'g/kg')
     ${country_filter}
   GROUP BY s2.latitude, s2.longitude
 `)
@@ -202,9 +208,7 @@ function markerColor(v) {
 }
 
 function fmtVal(v) {
-  return v == null ? "N/A"
-    : v >= 1000  ? (v / 1000).toFixed(0) + " mg/kg"
-    : v.toFixed(0) + " µg/kg"
+  return v == null ? "N/A" : v.toFixed(0) + " mg/kg"
 }
 
 // --- Render / update map ---
@@ -259,7 +263,7 @@ function fmtVal(v) {
     legendEl.innerHTML = `
       <div class="legend-title">${selected_element.label}</div>
       <div style="font-size:11px;color:#555">
-        Avg (µg/kg) · ${year_start}–${year_end} · ${countryLabel}
+        Avg (mg/kg) · ${year_start}–${year_end} · ${countryLabel}
       </div>
       <div class="legend-bar"></div>
       <div class="legend-labels">
