@@ -30,3 +30,9 @@ Use the ``Render Website`` option in RStudio.
 
 > [!Note]
 > The website deployed on GitHub Pages is automatically built using the same workflow and environment configuration.
+
+## Deployment
+Pushes to `main` trigger [`.github/workflows/publish.yml`](.github/workflows/publish.yml), which renders the site with Quarto/renv and deploys it to GitHub Pages.
+
+## Branching
+This repository follows [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/): `main` holds releases, `develop` is the integration branch, and work happens on `feature/*` / `release/*` branches. Feature branches are merged directly into `develop` (no pull request required) and then deleted.
