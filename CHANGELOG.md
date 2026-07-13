@@ -6,6 +6,15 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-07-13
+### Added
+- CLAUDE.md project guidance and documented deployment/branching in README
+- EFSA format and submission pages (v1 and v2) under Data Export
+
+### Fixed
+- typos in EFSA format/submission pages
+- renv.lock out of sync (dplyr and its dependencies not recorded)
+
 ## [0.1.12] - 2026-05-07
 ### Fixed
 - average calculation for the interactive map
