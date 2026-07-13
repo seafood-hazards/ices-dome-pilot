@@ -1,0 +1,100 @@
+---
+title: "EFSA Submission v1"
+subtitle: "Data export of trace elements for EFSA submission"
+---
+
+```{css, echo=FALSE}
+th {
+  white-space: nowrap;
+}
+```
+
+The page presents the data export of trace elements in background sediments from the pilot database. Source tables and columns refer to the [DB Schema](db-schema.qmd) of this project.
+
+```{r}
+library(dplyr)
+library(tibble)
+
+efsa_submission <- tribble(
+  ~Column,            ~`Lookup`, ~Optionality, ~Table,             ~`Column Names`,                        ~`Fixed Text`,      ~Missing,
+  "sampleId",         NA,        "Mandatory",  "sample",           "sample_id",                            NA,                 NA,
+  "recId",            "Yes",     "Mandatory",  NA,                 NA,                                     NA,                 NA,
+  "envComp",          NA,        "Mandatory",  NA,                 NA,                                     "marine sediment",  NA,
+  "pristineLoc",      NA,        "Mandatory",  NA,                 NA,                                     "Yes",              NA,
+  "sampleLocGC",      NA,        "Mandatory",  "site",             "latitude + longitude",                 NA,                 NA,
+  "sampleLocCM",      NA,        "Mandatory",  "site",             "country + municipality",                NA,                 NA,
+  "sampleDate",       NA,        "Mandatory",  "sample",           "date",                                 NA,                 NA,
+  "traceElText",      NA,        "Mandatory",  "parameter",        "param_description",                    NA,                 NA,
+  "traceElCode",      "Yes",     "Mandatory",  NA,                 NA,                                     NA,                 NA,
+  "specText",         NA,        "Mandatory",  "parameter",        'param_description + " (Total)"',       NA,                 NA,
+  "specCode",         "Yes",     "Mandatory",  NA,                 NA,                                     NA,                 NA,
+  "conc",             NA,        "Mandatory",  "sediment",         "value",                                NA,                 NA,
+  "unitText",         NA,        "Mandatory",  "sediment",         "unit",                                 NA,                 NA,
+  "unitCode",         "Yes",     "Mandatory",  NA,                 NA,                                     NA,                 NA,
+  "weightText",       NA,        "Mandatory",  "sediment",         "basis",                                NA,                 NA,
+  "weightCode",       "Yes",     "Mandatory",  NA,                 NA,                                     NA,                 NA,
+  "methAnText",       NA,        "Mandatory",  "analysis_method",  "metoa",                                NA,                 NA,
+  "methAnCode",       "Yes",     "Mandatory",  NA,                 NA,                                     NA,                 NA,
+  "LOD",              NA,        "Optional",   "lld",              "lod",                                  NA,                 NA,
+  "LOQ",              NA,        "Optional",   "lld",              "loq",                                  NA,                 NA,
+  "accLab",           NA,        "Optional",   NA,                 NA,                                     "No",               NA,
+  "phSed",            NA,        "Optional",   NA,                 NA,                                     NA,                 "Yes",
+  "TextureSedClay",   NA,        "Optional",   "sediment",         "value (grain-size param, see Sediment Fractions page)", NA, NA,
+  "TextureSedSilt",   NA,        "Optional",   "sediment",         "value (grain-size param, see Sediment Fractions page)", NA, NA,
+  "TextureSedSand",   NA,        "Optional",   "sediment",         "value (grain-size param, see Sediment Fractions page)", NA, NA,
+  "unitText2",        NA,        "Optional",   NA,                 NA,                                     "%",                NA,
+  "unitCode2",        "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "weightText2",      "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "weightCode2",      "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "ocSed",            NA,        "Optional",   "sediment",         "value (organic-matter param)",         NA,                 NA,
+  "unitText3",        NA,        "Optional",   "sediment",         "unit",                                 NA,                 NA,
+  "unitCode3",        "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "weightText3",      "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "weightCode3",      "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "phWater",          NA,        "Optional",   NA,                 NA,                                     NA,                 "Yes",
+  "hardWater",        NA,        "Optional",   NA,                 NA,                                     NA,                 "Yes",
+  "DOC",              NA,        "Optional",   NA,                 NA,                                     NA,                 "Yes",
+  "unitText5",        NA,        "Optional",   NA,                 NA,                                     NA,                 NA,
+  "unitCode5",        "Yes",     "Optional",   NA,                 NA,                                     NA,                 NA,
+  "publicData",       NA,        "Optional",   NA,                 NA,                                     "Yes",              NA,
+  "refPublication",   NA,        "Optional",   "reference",        "ref + ref_description",                NA,                 NA,
+  "comments",         NA,        "Optional",   NA,                 NA,                                     NA,                 "Yes",
+  "Missing recId",        "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing envComp",      "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing pristineLoc",  "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing sampleLoc",    "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing sampleDate",   "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing traceEl",      "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing spec",         "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing conc",         "Yes", "Optional",   NA,                 NA,                                     NA,                 NA,
+  "Missing methAn",       "Yes", "Optional",   NA,                 NA,                                     NA,                 NA
+)
+
+efsa_submission_full <- efsa_submission %>%
+  mutate(
+    across(
+      where(is.character),
+      ~coalesce(.x, "")
+    )
+  ) %>%
+  rename(c(`Source Table` = "Table",
+           `Source Columns` = "Column Names"))
+
+efsa_submission <- efsa_submission_full %>%
+  filter(Lookup != "Yes") %>%
+  dplyr::select(-c(Lookup, Missing))
+
+```
+
+## Data Mapping for Submission
+```{r}
+efsa_submission
+```
+
+## Full Data Mapping
+```{r}
+efsa_submission_full
+```
+
+## Data Export Method
+As the EFSA submission tool is an Excel file containing embedded macros, the data must be mapped column by column rather than through a standard row‑based export. This approach ensures that the structure of the submission file is not disrupted.
