@@ -15,7 +15,7 @@ The page shows the schema diagram and table definitions for the slim database, d
 
 The slim schema contains seven tables. The hierarchy flows from `dataset` and `site` through `event` and `subsample` to `measurement`. The `element` table serves as a lookup for both `method` and `measurement` via the `symbol` key.
 
-![](./image/vannmiljo_slim.webp){.zoomable}
+![](./image/ices_dome_slim.webp){.zoomable}
 
 ::: {.callout-warning}
 The `symbol` column in `measurement` is an intentional denormalization — it is derivable via `method_id → method.symbol` but is retained as a key for query efficiency.
@@ -32,8 +32,7 @@ library(tibble)
 element_tbl <- tribble(
   ~Name,      ~`Data Type`, ~PK, ~`NA Allowed`, ~Description,
   "symbol",   "TEXT",       "✓", "",            "Primary Key. Chemical symbol (e.g., Co, Cu).",
-  "element",  "TEXT",       "",  "",            "Full element name (e.g., Cobalt, Copper).",
-  "cas_no",   "TEXT",       "",  "✓",           "Chemical Abstracts Service (CAS) registry number."
+  "element",  "TEXT",       "",  "",            "Full element name (e.g., Cobalt, Copper)."
 )
 
 element_tbl
@@ -130,8 +129,8 @@ subsample_tbl <- tribble(
   ~Name,          ~`Data Type`, ~PK, ~`NA Allowed`, ~Description,
   "subsample_id", "INTEGER",    "✓", "",            "Primary Key. Unique subsample identifier.",
   "event_id",     "INTEGER",    "",  "",            "Foreign Key to Event table.",
-  "depth_from",   "INTEGER",    "",  "",            "Top depth of the sample interval (cm).",
-  "depth_to",     "INTEGER",    "",  "",            "Bottom depth of the sample interval (cm).",
+  "depth_from",   "INTEGER",    "",  "",            "Top depth of the sample interval (m).",
+  "depth_to",     "INTEGER",    "",  "",            "Bottom depth of the sample interval (m).",
   "matrix",       "TEXT",       "",  "✓",           "Matrix being analyzed."
 )
 
