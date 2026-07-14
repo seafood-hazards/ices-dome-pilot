@@ -6,6 +6,10 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.15] - 2026-07-14
+### Changed
+- renamed "DB Schema" nav entry to "DB Schema (Full)" to distinguish it from "DB Schema (Slim)"
+
 ## [0.1.14] - 2026-07-14
 ### Added
 - slim DB schema page (`db-schema-slim.qmd`) documenting a common, multi-source schema
