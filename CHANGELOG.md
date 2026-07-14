@@ -6,6 +6,10 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.14] - 2026-07-14
+### Added
+- slim DB schema page (`db-schema-slim.qmd`) documenting a common, multi-source schema
+
 ## [0.1.13] - 2026-07-13
 ### Added
 - CLAUDE.md project guidance and documented deployment/branching in README
