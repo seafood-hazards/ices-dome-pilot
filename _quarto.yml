@@ -21,7 +21,7 @@ website:
         href: index.qmd
       - text: "DB Design"
         menu:
-          - text: "DB Schema"
+          - text: "DB Schema (Full)"
             href: db-schema.qmd
           - text: "Data Preparation"
             href: data-preparation.qmd
