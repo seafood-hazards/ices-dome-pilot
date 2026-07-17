@@ -6,6 +6,11 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.16] - 2026-07-17
+### Fixed
+- slim DB schema page: lat/long rounding description now matches stated precision (3 d.p.)
+- CHANGELOG.md: missing bullet marker and Vannmiljø spelling
+
 ## [0.1.15] - 2026-07-14
 ### Changed
 - renamed "DB Schema" nav entry to "DB Schema (Full)" to distinguish it from "DB Schema (Slim)"
@@ -29,7 +34,7 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [0.1.11] - 2026-04-27
 ### Changed
-index page for new pages
+- index page for new pages
 
 ## [0.1.10] - 2026-04-27
 ### Fixed
@@ -83,7 +88,7 @@ index page for new pages
 
 ## [0.1.1] - 2026-04-14
 ### Added
-- Update all pages to replace vannmiljo data
+- Update all pages to replace Vannmiljø data
 
 ## [0.1.0] - 2026-04-13
 ### Added
