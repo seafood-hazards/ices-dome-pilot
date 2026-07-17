@@ -29,7 +29,7 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [0.1.11] - 2026-04-27
 ### Changed
-index page for new pages
+- index page for new pages
 
 ## [0.1.10] - 2026-04-27
 ### Fixed
@@ -83,7 +83,7 @@ index page for new pages
 
 ## [0.1.1] - 2026-04-14
 ### Added
-- Update all pages to replace vannmiljo data
+- Update all pages to replace Vannmiljø data
 
 ## [0.1.0] - 2026-04-13
 ### Added
