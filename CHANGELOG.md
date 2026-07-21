@@ -6,6 +6,11 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.17] - 2026-07-21
+### Changed
+- moved `matrix` column from subsample to measurement table in the slim schema
+- updated slim schema diagram to reflect the `matrix` column move
+
 ## [0.1.16] - 2026-07-17
 ### Fixed
 - slim DB schema page: lat/long rounding description now matches stated precision (3 d.p.)
