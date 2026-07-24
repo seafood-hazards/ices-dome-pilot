@@ -1,0 +1,26 @@
+---
+title: "Database Downloads"
+subtitle: Download links for the SQLite database files
+---
+
+```{css, echo=FALSE}
+th {
+  white-space: nowrap;
+}
+```
+
+Two versions of the SQLite database are published as assets on the same [GitHub release](https://github.com/seafood-hazards/ices-dome-pilot/releases/tag/v0.1.17): the full ICES-DOME schema used by this site, and the slim, multi-source-friendly schema.
+
+## Available Databases
+
+```{r}
+library(tibble)
+
+database_tbl <- tribble(
+  ~Version, ~File,                     ~Schema,                                     ~Download,
+  "Full",   "pilot_ices_dome.sqlite",  "[DB Schema (Full)](./db-schema.qmd)",       "[Download](https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.17/pilot_ices_dome.sqlite)",
+  "Slim",   "ices_dome_slim.sqlite",   "[DB Schema (Slim)](./db-schema-slim.qmd)",  "[Download](https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.17/ices_dome_slim.sqlite)"
+)
+
+knitr::kable(database_tbl)
+```
