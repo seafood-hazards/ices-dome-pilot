@@ -6,6 +6,13 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.18] - 2026-07-24
+### Added
+- Database Downloads page linking to the full and slim SQLite database files
+
+### Changed
+- bumped database release references to v0.1.17 (`download_resources.R`, `_db-setup.qmd`, `data-export.qmd`)
+
 ## [0.1.17] - 2026-07-21
 ### Changed
 - moved `matrix` column from subsample to measurement table in the slim schema
