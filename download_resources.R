@@ -1,8 +1,11 @@
 options(timeout = 600)
 
 # ── SQLite database ────────────────────────────────────────────────────────
-db_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/download/v0.1.17/pilot_ices_dome.sqlite"
-local_db_file_name <- "pilot_ices_dome.sqlite"
+# The only data this site needs. It comes from the LATEST release, so no version
+# is edited here: every release must carry the database as an asset, or this
+# download 404s. See docs/site.md.
+db_url <- "https://github.com/seafood-hazards/ices-dome-pilot/releases/latest/download/ices_dome_pilot.sqlite"
+local_db_file_name <- "ices_dome_pilot.sqlite"
 if (!file.exists(local_db_file_name)) {
   download.file(db_url, local_db_file_name, mode = "wb")
   message("Database downloaded.")
