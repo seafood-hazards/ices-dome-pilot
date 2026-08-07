@@ -28,6 +28,23 @@ through stratum-sqlite.
 Site coordinates are rounded to 3 decimal places. The nearest-country column is
 `est_country` here, not `country`.
 
+## The geo columns
+
+`site.dist_to_coast`, `est_country`, `country_code`, `municipality` and
+`sea_name` are computed by the external
+[seastamp](https://github.com/AIQC-Hub/seastamp) CLI (GSHHG full resolution,
+Natural Earth 1:10m, GISCO LAU 2021, IHO Sea Areas v3), run over the distinct
+site positions in an LAEA projection derived from the points themselves. They
+are **not** in the raw ICES-DOME export.
+
+They were recomputed at site v0.1.20: before that they came from an `sf` /
+`rnaturalearth` / `giscoR` implementation, which resolved `sea_name` to only
+four ocean basins across the whole of European waters. `distance-to-coast.qmd`
+and `location-names.qmd` document the method and the measured change.
+
+`est_country` is the country a site is *nearest to*, not the country that
+reported it: the reporting institute is on `project`.
+
 `code_lookup` is what makes this source verbose: ICES reports most fields as
 codes, and the table resolves them by `code_type`. `code-lookup-browser.qmd`
 browses it, and `sediment-fractions.qmd` uses the `MATRX` codes to document the
