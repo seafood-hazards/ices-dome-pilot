@@ -6,6 +6,22 @@ As this project is still in active development, it does not yet strictly adhere 
 
 ## [Unreleased]
 
+## [0.1.19] - 2026-08-07
+### Added
+- Pipeline Generations section on the home page (`_generations.qmd`), with links to the other four pilot sites and to the slim, clean, merged and refined generation sites
+
+### Changed
+- Database file renamed from `pilot_ices_dome.sqlite` to `ices_dome_pilot.sqlite`, matching the engine's `<source>_pilot.sqlite` convention
+- Database is downloaded from the latest GitHub release instead of a pinned release tag, so no version string has to be edited when a new database is published
+- Database Downloads page lists the single pilot database and links to the latest release
+- Grain Size Codes moved to the DB Design menu, and the Data Export menu renamed to EFSA Submission
+- CLAUDE.md reduced to the site's invariants, with the detail moved to `docs/database.md` and `docs/site.md`
+
+### Removed
+- Export to Tabular File page: the pilot generation no longer exports a dataset file
+- DB Schema (Slim) page and the slim database download, which belong to the slim generation's own site
+- Unreferenced `.data/` files (`ices_dome_projects.tsv.gz`, `points_web_ices_dome.Rds`), which no page reads
+
 ## [0.1.18] - 2026-07-24
 ### Added
 - Database Downloads page linking to the full and slim SQLite database files
