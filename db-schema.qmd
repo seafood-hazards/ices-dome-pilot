@@ -53,11 +53,11 @@ tribble(
   "station",       "TEXT",       "",  "",         "Station name.",
   "latitude",      "REAL",       "",  "",         "Latitude coordinate (decimal degrees).",
   "longitude",     "REAL",       "",  "",         "Longitude coordinate (decimal degrees).",
-  "dist_to_coast", "REAL",       "",  "✓",          "Distance to the nearest coastline (km), computed with seastamp.",
-  "est_country",   "TEXT",       "",  "✓",          "Nearest country (Natural Earth).",
-  "country_code",  "TEXT",       "",  "✓",          "ISO 3166-1 alpha-3 code of the nearest country (e.g. GBR).",
-  "municipality",  "TEXT",       "",  "✓",          "Nearest municipality (Eurostat GISCO LAU), Europe only.",
-  "sea_name",      "TEXT",       "",  "✓",          "Sea or ocean name (IHO Sea Areas v3)."
+  "dist_to_coast", "REAL",       "",  "✓",          "Distance to the nearest coastline (km). Reserved but EMPTY: filled at the clean stage.",
+  "est_country",   "TEXT",       "",  "✓",          "Nearest country. Reserved but EMPTY: filled at the clean stage.",
+  "country_code",  "TEXT",       "",  "✓",          "ISO 3166-1 alpha-3 code of the nearest country (e.g. GBR). Reserved but EMPTY: filled at the clean stage.",
+  "municipality",  "TEXT",       "",  "✓",          "Nearest municipality, Europe only. Reserved but EMPTY: filled at the clean stage.",
+  "sea_name",      "TEXT",       "",  "✓",          "Sea or ocean name. Reserved but EMPTY: filled at the clean stage."
 )
 ```
 
